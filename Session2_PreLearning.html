@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-Learning — Narrative Past Tense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF8;
+    --card: #FFFFFF;
+    --ink: #16232F;
+    --ink-soft: #5B6B7A;
+    --ink-faint: #93A0AC;
+    --teal: #2F6F71;
+    --teal-soft: #E4EEEE;
+    --amber: #C98A3E;
+    --amber-soft: #F8ECDB;
+    --rose: #B0473F;
+    --rose-soft: #F7E9E7;
+    --line: #DDD8CC;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 100px; }
+
+  /* ---------- Header ---------- */
+  header.top {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 0 0 10px;
+  }
+  h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 30px;
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+  .subtitle { color: var(--ink-soft); font-size: 15px; margin: 0; }
+
+  .meta-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 5px 12px;
+  }
+
+  /* ---------- Stepper ---------- */
+  .stepper {
+    display: flex;
+    gap: 6px;
+    margin: 28px 0 8px;
+  }
+  .step-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--line);
+    transition: background 0.3s ease;
+  }
+  .step-dot.done { background: var(--teal); }
+  .step-dot.current { background: var(--amber); }
+  .step-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+    margin-bottom: 36px;
+  }
+
+  /* ---------- Stage cards ---------- */
+  .stage {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 28px 30px;
+    margin-bottom: 22px;
+    opacity: 0.4;
+    pointer-events: none;
+    filter: saturate(0.5);
+    transition: opacity 0.35s ease, filter 0.35s ease;
+  }
+  .stage.active {
+    opacity: 1;
+    pointer-events: auto;
+    filter: none;
+  }
+  .stage.complete { opacity: 1; pointer-events: auto; filter: none; }
+
+  .stage-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+  .stage h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 21px;
+    margin: 4px 0 4px;
+  }
+  .stage .stage-sub {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0 0 20px;
+  }
+
+  .locked-note {
+    font-size: 13.5px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  /* ---------- Example pairs (Stage 1) ---------- */
+  .example-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 560px) { .example-pair { grid-template-columns: 1fr; } }
+  .example-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  .example-card .tag {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .mark {
+    background: linear-gradient(transparent 60%, var(--amber-soft) 60%);
+    padding: 0 1px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .mark.on { border-bottom: 2px solid var(--amber); background: linear-gradient(transparent 55%, var(--amber-soft) 55%); }
+  .notice-hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    background: var(--teal-soft);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 16px;
+  }
+
+  /* ---------- CCQs / Quiz (Stage 2 & 4) ---------- */
+  .q-block { margin-bottom: 20px; }
+  .q-text { font-weight: 600; font-size: 15px; margin-bottom: 10px; }
+  .q-options { display: flex; flex-direction: column; gap: 8px; }
+  .q-option {
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    cursor: pointer;
+    background: var(--paper);
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .q-option:hover { border-color: var(--teal); }
+  .q-option.correct { background: var(--teal-soft); border-color: var(--teal); }
+  .q-option.incorrect { background: var(--rose-soft); border-color: var(--rose); }
+  .q-feedback {
+    font-size: 13.5px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    display: none;
+  }
+  .q-feedback.show { display: block; }
+  .q-feedback.correct-fb { background: var(--teal-soft); color: var(--teal); }
+  .q-feedback.incorrect-fb { background: var(--rose-soft); color: var(--rose); }
+
+  .btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    border-radius: 7px;
+    padding: 11px 20px;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: var(--teal); }
+  .btn:disabled { background: var(--ink-faint); cursor: not-allowed; }
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn.ghost:hover { background: var(--paper); border-color: var(--teal); color: var(--teal); }
+
+  /* ---------- Rule box (Stage 3) ---------- */
+  .rule-box {
+    border-left: 3px solid var(--amber);
+    background: var(--amber-soft);
+    padding: 16px 18px;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+  }
+  .rule-box strong { display: block; margin-bottom: 6px; font-family: 'Fraunces', serif; font-size: 16px; }
+
+  /* ---------- Score summary (Stage 4) ---------- */
+  .score-box {
+    margin-top: 8px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--teal-soft);
+    color: var(--teal);
+    font-weight: 600;
+    font-size: 14.5px;
+    display: none;
+  }
+  .score-box.show { display: block; }
+
+  /* ---------- Stage 5 mode toggle ---------- */
+  .mode-toggle {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 3px;
+    margin-bottom: 20px;
+    background: var(--paper);
+  }
+  .mode-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .mode-btn.active { background: var(--ink); color: var(--paper); }
+
+  .video-placeholder {
+    border: 1px dashed var(--ink-faint);
+    border-radius: 8px;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    font-size: 13.5px;
+    margin-bottom: 18px;
+    background: #F1EFE9;
+  }
+  textarea, input[type=text] {
+    width: 100%;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 10px 12px;
+    resize: vertical;
+  }
+  textarea { min-height: 110px; }
+  .word-count { font-size: 12.5px; color: var(--ink-faint); margin-top: 6px; font-family: 'IBM Plex Mono', monospace; }
+  .app-q { margin-bottom: 16px; }
+  .app-q label { display: block; font-size: 14.5px; font-weight: 600; margin-bottom: 6px; }
+
+  footer.done-banner {
+    text-align: center;
+    padding: 26px;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--paper);
+    display: none;
+    margin-top: 8px;
+  }
+  footer.done-banner.show { display: block; }
+  footer.done-banner .fr { font-family: 'Fraunces', serif; font-size: 19px; margin-bottom: 6px; }
+  footer.done-banner p { color: #C7D0D6; font-size: 13.5px; margin: 0; }
+
+  .handwrite-note {
+    border-left: 3px solid var(--teal);
+    background: var(--teal-soft);
+    padding: 16px 18px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 4px;
+  }
+  .handwrite-note strong {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 15.5px;
+    color: var(--teal);
+    margin-bottom: 6px;
+  }
+  .handwrite-note p {
+    font-size: 14px;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  footer.site-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  footer.site-footer p {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin: 0 0 6px;
+    line-height: 1.6;
+  }
+  footer.site-footer a { color: var(--ink-faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">Pre-Learning · Section 1 of 2</p>
+    <h1 class="title">Narrative Past Tense — Telling the Story of a Change</h1>
+    <p class="subtitle">Grammar: simple past vs. "used to" vs. past continuous · Theme: how an HR program evolved</p>
+    <div class="meta-row">
+      <span class="meta-chip">SESSION 2</span>
+      <span class="meta-chip">~40 MIN</span>
+      <span class="meta-chip">SELF-PACED</span>
+    </div>
+  </header>
+
+  <div class="stepper">
+    <div class="step-dot" data-dot="1"></div>
+    <div class="step-dot" data-dot="2"></div>
+    <div class="step-dot" data-dot="3"></div>
+    <div class="step-dot" data-dot="4"></div>
+    <div class="step-dot" data-dot="5"></div>
+  </div>
+  <div class="step-labels">
+    <span>NOTICE</span><span>CHECK</span><span>RULE</span><span>PRACTICE</span><span>APPLY</span>
+  </div>
+
+  <!-- STAGE 1 -->
+  <section class="stage" id="stage1">
+    <span class="stage-num">01 — NOTICE THE PATTERN</span>
+    <h2>Read. Don't explain yet — just notice.</h2>
+    <p class="stage-sub">Click any underlined phrase in the sentences below. Look for what's different between them before you scroll on.</p>
+
+    <div class="example-pair">
+      <div class="example-card">
+        <span class="tag">Everyday</span>
+        I <span class="mark" data-m="1">used to walk</span> to school every morning when I was a kid.
+      </div>
+      <div class="example-card">
+        <span class="tag">Professional</span>
+        We <span class="mark" data-m="1">used to review</span> onboarding feedback only once a year.
+      </div>
+    </div>
+    <div class="example-pair">
+      <div class="example-card">
+        <span class="tag">Everyday</span>
+        Last Tuesday I <span class="mark" data-m="2">walked</span> to the pharmacy because my car wouldn't start.
+      </div>
+      <div class="example-card">
+        <span class="tag">Professional</span>
+        Last quarter we <span class="mark" data-m="2">reviewed</span> the onboarding feedback with the whole team.
+      </div>
+    </div>
+    <div class="example-pair">
+      <div class="example-card">
+        <span class="tag">Everyday</span>
+        While I <span class="mark" data-m="3">was walking</span> home, it started to rain.
+      </div>
+      <div class="example-card">
+        <span class="tag">Professional</span>
+        While we <span class="mark" data-m="3">were reviewing</span> the data, we noticed a gap in one region.
+      </div>
+    </div>
+
+    <p class="notice-hint">Marker note: pairs tagged <strong>1</strong> describe something repeated/habitual, <strong>2</strong> describe one finished action, <strong>3</strong> describe something in progress when something else happened. You don't need the labels yet — just notice the shape of each sentence.</p>
+
+    <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(2)">I've noticed something → Continue</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 -->
+  <section class="stage" id="stage2">
+    <span class="stage-num">02 — CONCEPT CHECK</span>
+    <h2>Test what you noticed</h2>
+    <p class="stage-sub">No rule has been given yet on purpose. Answer based on the pattern you just saw.</p>
+
+    <div class="q-block" data-q="1">
+      <p class="q-text">1. Which sentence describes something that happened repeatedly, over a long period, and no longer happens?</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">"Last quarter we reviewed the onboarding feedback."</div>
+        <div class="q-option" data-correct="true">"We used to review onboarding feedback once a year."</div>
+        <div class="q-option" data-correct="false">"While we were reviewing the data, we noticed a gap."</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="2">
+      <p class="q-text">2. Which form is used for a single completed action at a specific past time?</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">used to + verb</div>
+        <div class="q-option" data-correct="true">simple past</div>
+        <div class="q-option" data-correct="false">was/were + -ing</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="3">
+      <p class="q-text">3. "While we ___ the data, we noticed a gap" — which form fits, and why?</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">reviewed — because it's a finished action</div>
+        <div class="q-option" data-correct="true">were reviewing — because it was in progress when something else happened</div>
+        <div class="q-option" data-correct="false">used to review — because it happened repeatedly</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="4">
+      <p class="q-text">4. Which sentence implies the practice is no longer done today?</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="true">"We used to approve access requests manually."</div>
+        <div class="q-option" data-correct="false">"We approved the access request yesterday."</div>
+        <div class="q-option" data-correct="false">"We were approving access requests when the system went down."</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="5">
+      <p class="q-text">5. Which sentence describes two things happening at once, where one gives background to the other?</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">"We used to hold town halls every quarter."</div>
+        <div class="q-option" data-correct="false">"We held a town hall last Friday."</div>
+        <div class="q-option" data-correct="true">"We were holding a town hall when the CEO announced the merger."</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="6">
+      <p class="q-text">6. Which sentence would you use to describe one specific action with a stated time, like "in March"?</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">"We used to run engagement surveys twice a year."</div>
+        <div class="q-option" data-correct="true">"We ran an engagement survey in March."</div>
+        <div class="q-option" data-correct="false">"We were running the engagement survey when response rates spiked."</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+      <button class="btn" id="ccqNext" onclick="goTo(3)" disabled>Answer all 6 to continue</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 -->
+  <section class="stage" id="stage3">
+    <span class="stage-num">03 — THE RULE</span>
+    <h2>Confirming what you found</h2>
+    <div class="rule-box">
+      <strong>Three ways to talk about the past</strong>
+      • <strong>used to + verb</strong> — a repeated habit or state that no longer continues ("we used to review it yearly").<br>
+      • <strong>simple past</strong> — a single completed action at a specific time ("we reviewed it last quarter").<br>
+      • <strong>was/were + -ing</strong> — an action in progress when something else happened ("we were reviewing it when we noticed the gap").
+    </div>
+    <p style="font-size:13.5px; color:var(--ink-soft); margin-top:14px;">The mistake to watch for: reaching for simple past by default for everything, even habitual or backgrounded actions — that's the pattern to unlearn.</p>
+    <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(4)">Continue to practice</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 -->
+  <section class="stage" id="stage4">
+    <span class="stage-num">04 — CONSOLIDATION QUIZ</span>
+    <h2>Put it to work</h2>
+    <p class="stage-sub">Choose the correct form for each work-related sentence.</p>
+
+    <div class="q-block" data-q="4">
+      <p class="q-text">1. When I first joined the team, we ___ (have) weekly stand-ups — now we don't anymore.</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="true">used to have</div>
+        <div class="q-option" data-correct="false">had</div>
+        <div class="q-option" data-correct="false">were having</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="5">
+      <p class="q-text">2. We ___ (roll out) the new policy in March.</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="true">rolled out</div>
+        <div class="q-option" data-correct="false">used to roll out</div>
+        <div class="q-option" data-correct="false">were rolling out</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="6">
+      <p class="q-text">3. While leadership ___ (discuss) the budget, the CFO raised a concern about headcount.</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">discussed</div>
+        <div class="q-option" data-correct="true">was discussing</div>
+        <div class="q-option" data-correct="false">used to discuss</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="7">
+      <p class="q-text">4. We ___ (interview) 40 candidates last quarter for the graduate program.</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="true">interviewed</div>
+        <div class="q-option" data-correct="false">used to interview</div>
+        <div class="q-option" data-correct="false">were interviewing</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="8">
+      <p class="q-text">5. The team ___ (review) applications when the finalist list leaked internally.</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="false">reviewed</div>
+        <div class="q-option" data-correct="true">was reviewing</div>
+        <div class="q-option" data-correct="false">used to review</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="9">
+      <p class="q-text">6. Every December, we ___ (send) a company-wide engagement survey — that's no longer part of our calendar.</p>
+      <div class="q-options">
+        <div class="q-option" data-correct="true">used to send</div>
+        <div class="q-option" data-correct="false">sent</div>
+        <div class="q-option" data-correct="false">were sending</div>
+      </div>
+      <div class="q-feedback"></div>
+    </div>
+
+    <div class="score-box" id="scoreBox"></div>
+
+    <div style="margin-top:10px; display:flex; justify-content:flex-end;">
+      <button class="btn" id="quizNext" onclick="goTo(5)" disabled>Answer all 6 to continue</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 -->
+  <section class="stage" id="stage5">
+    <span class="stage-num">05 — APPLICATION</span>
+    <h2>Use it for real</h2>
+    <p class="stage-sub">This session's application is a writing task. Listening/output practice will come from the video segment in the live class.</p>
+
+    <div class="app-q">
+      <label>Prompt</label>
+      <p style="font-size:14.5px; margin:0 0 4px;">Think of one HR program, process, or initiative you've been closely involved with — an onboarding process, a DEI initiative, an engagement survey, a talent review cycle, anything from your own experience.</p>
+      <p style="font-size:14.5px; margin:0;">Write <strong>5–8 sentences</strong> describing how it changed over time. Use all three forms at least once: <strong>used to</strong>, <strong>simple past</strong>, and <strong>past continuous</strong>.</p>
+    </div>
+
+    <div class="handwrite-note">
+      <strong>How to submit this one</strong>
+      <p>Write your response by hand, on paper — this page doesn't save anything, and that's on purpose. Take a photo of what you've written and send it over WhatsApp before class. We'll go through it together at the start of the session.</p>
+    </div>
+
+    <div style="margin-top:22px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="finish()">I've written my response</button>
+    </div>
+  </section>
+
+  <footer class="done-banner" id="doneBanner">
+    <div class="fr">Nice work — bring it to class.</div>
+    <p>Send a photo of your handwritten response over WhatsApp before the session. We'll review it together at the start of class and build the correction + discussion around what you produced.</p>
+  </footer>
+
+  <footer class="site-footer">
+    <p>Curriculum Developed by Girish Vijayan &nbsp;|&nbsp; <a href="mailto:girish@zenningmyway.com">girish@zenningmyway.com</a></p>
+    <p>&copy; 2026 Girish Vijayan. All Rights Reserved. &nbsp;·&nbsp; All materials in this curriculum are protected by copyright. &nbsp;·&nbsp; Unauthorized reproduction, distribution, or adaptation is prohibited.</p>
+  </footer>
+
+</div>
+
+<script>
+  let current = 1;
+  const totalStages = 5;
+
+  function updateStepper() {
+    for (let i = 1; i <= totalStages; i++) {
+      const dot = document.querySelector('[data-dot="' + i + '"]');
+      dot.classList.remove('done', 'current');
+      if (i < current) dot.classList.add('done');
+      if (i === current) dot.classList.add('current');
+    }
+  }
+
+  function goTo(n) {
+    document.getElementById('stage' + current).classList.remove('active');
+    document.getElementById('stage' + current).classList.add('complete');
+    current = n;
+    const el = document.getElementById('stage' + current);
+    el.classList.add('active');
+    updateStepper();
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('stage1').classList.add('active');
+  updateStepper();
+
+  // Marker highlight interaction (Stage 1)
+  document.querySelectorAll('.mark').forEach(m => {
+    m.addEventListener('click', () => {
+      const id = m.getAttribute('data-m');
+      document.querySelectorAll('.mark[data-m="' + id + '"]').forEach(x => x.classList.toggle('on'));
+    });
+  });
+
+  // Generic question handler for both CCQs (stage2) and quiz (stage4)
+  function wireQuestion(qBlock, onAnswered) {
+    const options = qBlock.querySelectorAll('.q-option');
+    const feedback = qBlock.querySelector('.q-feedback');
+    let answered = false;
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (answered) return;
+        answered = true;
+        const correct = opt.getAttribute('data-correct') === 'true';
+        options.forEach(o => {
+          if (o.getAttribute('data-correct') === 'true') o.classList.add('correct');
+        });
+        if (!correct) opt.classList.add('incorrect');
+        feedback.classList.add('show');
+        feedback.classList.add(correct ? 'correct-fb' : 'incorrect-fb');
+        feedback.textContent = correct ? 'Correct.' : 'Not quite — the highlighted option is correct.';
+        onAnswered(correct);
+      });
+    });
+  }
+
+  // Stage 2 — CCQs
+  let ccqAnswered = 0;
+  document.querySelectorAll('#stage2 .q-block').forEach(qb => {
+    wireQuestion(qb, () => {
+      ccqAnswered++;
+      if (ccqAnswered === 6) document.getElementById('ccqNext').disabled = false;
+    });
+  });
+
+  // Stage 4 — Quiz with score
+  let quizAnswered = 0;
+  let quizCorrect = 0;
+  document.querySelectorAll('#stage4 .q-block').forEach(qb => {
+    wireQuestion(qb, (correct) => {
+      quizAnswered++;
+      if (correct) quizCorrect++;
+      if (quizAnswered === 6) {
+        document.getElementById('quizNext').disabled = false;
+        const box = document.getElementById('scoreBox');
+        box.classList.add('show');
+        box.textContent = 'Score: ' + quizCorrect + ' / 6 correct';
+      }
+    });
+  });
+
+  function finish() {
+    document.getElementById('doneBanner').classList.add('show');
+    document.getElementById('doneBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+
+</body>
+</html>
