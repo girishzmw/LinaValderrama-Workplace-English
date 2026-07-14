@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom — Narrative Past Tense (Session 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FAFAF8;
+    --card: #FFFFFF;
+    --ink: #16232F;
+    --ink-soft: #5B6B7A;
+    --ink-faint: #93A0AC;
+    --teal: #2F6F71;
+    --teal-soft: #E4EEEE;
+    --amber: #C98A3E;
+    --amber-soft: #F8ECDB;
+    --rose: #B0473F;
+    --rose-soft: #F7E9E7;
+    --line: #DDD8CC;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 100px; }
+
+  header.top {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin: 0 0 10px;
+  }
+  h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 30px;
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+  .subtitle { color: var(--ink-soft); font-size: 15px; margin: 0; }
+
+  .meta-row {
+    display: flex;
+    gap: 18px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .meta-chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 5px 12px;
+  }
+
+  .stepper { display: flex; gap: 6px; margin: 28px 0 8px; }
+  .step-dot { flex: 1; height: 4px; border-radius: 2px; background: var(--line); transition: background 0.3s ease; }
+  .step-dot.done { background: var(--teal); }
+  .step-dot.current { background: var(--amber); }
+  .step-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.02em;
+    margin-bottom: 36px;
+  }
+
+  .stage {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 28px 30px;
+    margin-bottom: 22px;
+    opacity: 0.4;
+    pointer-events: none;
+    filter: saturate(0.5);
+    transition: opacity 0.35s ease, filter 0.35s ease;
+  }
+  .stage.active { opacity: 1; pointer-events: auto; filter: none; }
+  .stage.complete { opacity: 1; pointer-events: auto; filter: none; }
+
+  .stage-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+  }
+  .stage h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 21px; margin: 4px 0 4px; }
+  .stage .stage-sub { color: var(--ink-soft); font-size: 14.5px; margin: 0 0 20px; }
+
+  .btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    border-radius: 7px;
+    padding: 11px 20px;
+    cursor: pointer;
+    background: var(--ink);
+    color: var(--paper);
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: var(--teal); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn.ghost:hover { background: var(--paper); border-color: var(--teal); color: var(--teal); }
+  .btn.small { padding: 7px 14px; font-size: 12.5px; }
+
+  /* Script / note boxes */
+  .rule-box {
+    border-left: 3px solid var(--amber);
+    background: var(--amber-soft);
+    padding: 16px 18px;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+  .rule-box strong { display: block; margin-bottom: 8px; font-family: 'Fraunces', serif; font-size: 16px; }
+  .rule-box ul { margin: 0; padding-left: 18px; }
+  .rule-box li { margin-bottom: 6px; }
+
+  .teacher-note {
+    border-left: 3px solid var(--teal);
+    background: var(--teal-soft);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    margin-top: 16px;
+  }
+  .teacher-note strong { display: block; font-family: 'Fraunces', serif; font-size: 15px; color: var(--teal); margin-bottom: 4px; }
+
+  /* Reading passage */
+  .passage {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+  .passage p { margin: 0 0 12px; }
+  .passage p:last-child { margin-bottom: 0; }
+  .passage .passage-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .q-item { margin-bottom: 16px; }
+  .q-item .q-text { font-weight: 600; font-size: 14.5px; margin-bottom: 8px; }
+  .reveal-content {
+    display: none;
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: var(--teal-soft);
+    color: var(--ink);
+    font-size: 14px;
+  }
+  .reveal-content.show { display: block; }
+
+  /* Video launch box */
+  .video-launch {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #F1EFE9;
+    margin-bottom: 16px;
+    aspect-ratio: 16/9;
+    transition: border-color 0.15s ease;
+  }
+  .video-launch:hover { border-color: var(--teal); }
+  .video-launch-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .play-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #D8362E;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    padding-left: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .video-launch-label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+
+  /* Idiom card */
+  .idiom-card {
+    border-left: 3px solid var(--amber);
+    background: var(--amber-soft);
+    padding: 18px 20px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 18px;
+  }
+  .idiom-card .idiom-name { font-family: 'Fraunces', serif; font-size: 20px; margin: 0 0 8px; color: var(--ink); }
+  .idiom-card .idiom-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .idiom-card p { margin: 4px 0 14px; font-size: 14.5px; }
+  .idiom-card p:last-child { margin-bottom: 0; }
+
+  textarea {
+    width: 100%;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14.5px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 10px 12px;
+    resize: vertical;
+    min-height: 90px;
+  }
+  .app-q label { display: block; font-size: 14.5px; font-weight: 600; margin-bottom: 6px; }
+
+  /* Extension menu */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .menu-grid { grid-template-columns: 1fr; } }
+  .menu-card { border: 1px solid var(--line); border-radius: 8px; padding: 16px; background: var(--paper); }
+  .menu-card h3 { font-family: 'Fraunces', serif; font-size: 16px; margin: 0 0 8px; }
+  .menu-card p { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+
+  footer.done-banner {
+    text-align: center;
+    padding: 26px;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--paper);
+    display: none;
+    margin-top: 8px;
+  }
+  footer.done-banner.show { display: block; }
+  footer.done-banner .fr { font-family: 'Fraunces', serif; font-size: 19px; margin-bottom: 6px; }
+  footer.done-banner p { color: #C7D0D6; font-size: 13.5px; margin: 0; }
+
+  footer.site-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  footer.site-footer p { font-size: 11.5px; color: var(--ink-faint); margin: 0 0 6px; line-height: 1.6; }
+  footer.site-footer a { color: var(--ink-faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="eyebrow">Classroom · Section 2 of 2</p>
+    <h1 class="title">Narrative Past Tense — Live Session</h1>
+    <p class="subtitle">Grammar: simple past vs. "used to" vs. past continuous · Theme: how an HR program evolved</p>
+    <div class="meta-row">
+      <span class="meta-chip">SESSION 2</span>
+      <span class="meta-chip">60 MIN</span>
+      <span class="meta-chip">LIVE 1:1</span>
+    </div>
+  </header>
+
+  <div class="stepper">
+    <div class="step-dot" data-dot="1"></div>
+    <div class="step-dot" data-dot="2"></div>
+    <div class="step-dot" data-dot="3"></div>
+    <div class="step-dot" data-dot="4"></div>
+    <div class="step-dot" data-dot="5"></div>
+    <div class="step-dot" data-dot="6"></div>
+  </div>
+  <div class="step-labels">
+    <span>CORRECT</span><span>READ</span><span>WATCH</span><span>DISCUSS</span><span>IDIOM</span><span>EXTEND</span>
+  </div>
+
+  <!-- STAGE 1 — REVIEW PRE-LEARNING WORK -->
+  <section class="stage" id="stage1">
+    <span class="stage-num">01 — REVIEW · 6 MIN</span>
+    <h2>Let's review your pre-learning work</h2>
+    <p class="stage-sub">We'll go through your written response together. Be ready to say which tense you used in each sentence and why — and to say the corrected version out loud where needed.</p>
+
+    <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(2)">Continue → Reading</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2 — READING COMPREHENSION -->
+  <section class="stage" id="stage2">
+    <span class="stage-num">02 — READING COMPREHENSION · 10 MIN</span>
+    <h2>Rebuilding the First Ninety Days</h2>
+    <p class="stage-sub">Read the passage, then answer the questions below.</p>
+
+    <div class="passage">
+      <span class="passage-title">Reading passage</span>
+      <p>For years, the regional HR team used to run onboarding as a single, one-day orientation. New hires used to sit through a long presentation on policies, sign some forms, and go straight to their desks. Managers used to assume new employees would "figure it out" as they went along.</p>
+      <p>That changed in 2019. After exit interviews showed that people who left within six months often mentioned feeling lost early on, the HR team redesigned the process. They extended onboarding to ninety days and built in regular mentor check-ins. During the first pilot, while the team was still testing the new schedule, one new hire admitted she almost quit in her second week — not because of the job, but because no one had explained how decisions got made. That comment changed everything.</p>
+      <p>The team rolled out the new model company-wide the following year. Within twelve months, early attrition dropped by almost a third.</p>
+    </div>
+
+    <div class="q-item">
+      <p class="q-text">1. How did onboarding look before the redesign?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check answer</button>
+      <div class="reveal-content">A single one-day orientation — a long policy presentation, paperwork, then straight to the desk, with no follow-up.</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">2. What triggered the decision to change it?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check answer</button>
+      <div class="reveal-content">Exit interviews showed people who left within six months often said they'd felt lost early on.</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">3. What happened during the pilot that "changed everything"?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check answer</button>
+      <div class="reveal-content">While the team was still testing the new schedule, a new hire admitted she'd almost quit — not over the job, but because no one had explained how decisions got made.</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">4. What was the measurable result after the new model rolled out?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check answer</button>
+      <div class="reveal-content">Early attrition dropped by almost a third within twelve months.</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">5. Grammar noticing: find two uses of "used to" — what do they have in common?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check answer</button>
+      <div class="reveal-content">"used to run", "used to sit through", "used to assume" — all describe repeated practices that no longer happen today.</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">6. Grammar noticing: find the one past continuous sentence — what was happening when the new hire almost quit?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check answer</button>
+      <div class="reveal-content">"While the team was still testing the new schedule" — that's the background action in progress.</div>
+    </div>
+
+    <div style="margin-top:8px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(3)">Continue → Video</button>
+    </div>
+  </section>
+
+  <!-- STAGE 3 — ANCHORING VIDEO TASK -->
+  <section class="stage" id="stage3">
+    <span class="stage-num">03 — ANCHORING VIDEO TASK · 10 MIN (PROTECTED)</span>
+    <h2>Watch, then build — don't retrieve</h2>
+    <p class="stage-sub">Watch the clip, then answer the questions below. Try to use "used to," simple past, and past continuous where they fit — the video itself won't hand you the tense, so you'll need to build the sentences yourself.</p>
+
+    <a class="video-launch" href="https://youtu.be/e_eVYDmFyHY" target="_blank" rel="noopener">
+      <div class="video-launch-inner">
+        <span class="play-btn">&#9654;</span>
+        <span class="video-launch-label">Watch on YouTube</span>
+      </div>
+    </a>
+
+    <div class="q-item">
+      <p class="q-text">1. Hill contrasts a "playbook" with a "policy." Based on what he says, what do you think a company used to do before it adopted this playbook approach?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check a sample answer</button>
+      <div class="reveal-content">"Before this, the company probably used to hand employees a strict policy with no room to adapt or push back."</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">2. Imagine an employee at a more traditional company hearing about a sudden new policy. What was probably happening on their team when the announcement came through?</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check a sample answer</button>
+      <div class="reveal-content">"The team was probably scrambling to understand the new rule when the announcement came through, with no one explaining why."</div>
+    </div>
+    <div class="q-item">
+      <p class="q-text">3. Retell Hill's point about trust as if it already happened at a company you know. Start with: "They used to..., but then they..."</p>
+      <button class="btn ghost small" onclick="toggleReveal(this)">Check a sample answer</button>
+      <div class="reveal-content">"They used to track exactly when people logged in, but then they shifted to measuring outcomes instead — and trust grew from there."</div>
+    </div>
+
+    <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(4)">Continue → Discussion</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4 — DISCUSSION / DEBATE -->
+  <section class="stage" id="stage4">
+    <span class="stage-num">04 — DISCUSSION · 20 MIN</span>
+    <h2>Tell me what changed</h2>
+    <p class="stage-sub">Let's talk through this one together — take your time building the story.</p>
+
+    <div class="rule-box">
+      <strong>Prompt</strong>
+      "Tell me about an HR program or process you managed that changed significantly while you were involved with it — what did it use to look like, and how did it change?"
+    </div>
+
+    <div class="rule-box">
+      <strong>We might also explore</strong>
+      <ul>
+        <li>"What was happening in the organization that pushed the change?"</li>
+        <li>"Was there a specific moment you noticed it needed to change?"</li>
+        <li>"How did your team react while the change was happening?"</li>
+        <li>"Looking back, what would you do differently?"</li>
+      </ul>
+    </div>
+
+    <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(5)">Continue → Idiom</button>
+    </div>
+  </section>
+
+  <!-- STAGE 5 — IDIOM SPOTLIGHT -->
+  <section class="stage" id="stage5">
+    <span class="stage-num">05 — IDIOM SPOTLIGHT</span>
+    <h2>One idiom, tied to today's theme</h2>
+    <p class="stage-sub">A new expression, worth adding to how you talk about change at work.</p>
+
+    <div class="idiom-card">
+      <span class="idiom-label">Idiom</span>
+      <p class="idiom-name">Growing pains</p>
+      <span class="idiom-label">Meaning</span>
+      <p>The difficulties or problems that come up when something — a company, a system, a person — is growing, developing, or changing, especially in the early stages.</p>
+      <span class="idiom-label">Example</span>
+      <p>"The new onboarding process caused some growing pains in its first few months, but the team adjusted quickly."</p>
+    </div>
+
+    <div class="app-q">
+      <label>Your turn: write one sentence using "growing pains," about an HR program or process you've been involved with.</label>
+      <textarea placeholder="Type it here — we'll refine it together..."></textarea>
+    </div>
+
+    <div style="margin-top:16px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="goTo(6)">Continue → Extension</button>
+    </div>
+  </section>
+
+  <!-- STAGE 6 — EXTRA PRACTICE -->
+  <section class="stage" id="stage6">
+    <span class="stage-num">06 — EXTRA PRACTICE · IF TIME ALLOWS</span>
+    <h2>If there's time left</h2>
+    <p class="stage-sub">We'll try one of these if we have a few extra minutes.</p>
+
+    <div class="menu-grid">
+      <div class="menu-card">
+        <h3>Role-play</h3>
+        <p>You'll play an HR leader announcing this change to a skeptical team, contrasting "how things used to be" with "how they are now."</p>
+      </div>
+      <div class="menu-card">
+        <h3>Error-correction game</h3>
+        <p>We'll look at 2–3 real slips from your own writing, and you'll spot and correct them.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+      <button class="btn" onclick="finish()">End of session</button>
+    </div>
+  </section>
+
+  <footer class="done-banner" id="doneBanner">
+    <div class="fr">Great work today!</div>
+    <p>You practiced telling the story of a change using three past forms — used to, simple past, and past continuous — across writing, reading, listening, and live conversation. See you next session.</p>
+  </footer>
+
+  <footer class="site-footer">
+    <p>Curriculum Developed by Girish Vijayan &nbsp;|&nbsp; <a href="mailto:girish@zenningmyway.com">girish@zenningmyway.com</a></p>
+    <p>&copy; 2026 Girish Vijayan. All Rights Reserved. &nbsp;·&nbsp; All materials in this curriculum are protected by copyright. &nbsp;·&nbsp; Unauthorized reproduction, distribution, or adaptation is prohibited.</p>
+  </footer>
+
+</div>
+
+<script>
+  let current = 1;
+  const totalStages = 6;
+
+  function updateStepper() {
+    for (let i = 1; i <= totalStages; i++) {
+      const dot = document.querySelector('[data-dot="' + i + '"]');
+      dot.classList.remove('done', 'current');
+      if (i < current) dot.classList.add('done');
+      if (i === current) dot.classList.add('current');
+    }
+  }
+
+  function goTo(n) {
+    document.getElementById('stage' + current).classList.remove('active');
+    document.getElementById('stage' + current).classList.add('complete');
+    current = n;
+    const el = document.getElementById('stage' + current);
+    el.classList.add('active');
+    updateStepper();
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.getElementById('stage1').classList.add('active');
+  updateStepper();
+
+  function toggleReveal(btn) {
+    const content = btn.nextElementSibling;
+    if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent;
+    const shown = content.classList.toggle('show');
+    btn.textContent = shown ? 'Hide answer' : btn.dataset.originalText;
+  }
+
+  function finish() {
+    document.getElementById('doneBanner').classList.add('show');
+    document.getElementById('doneBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+</script>
+
+</body>
+</html>
