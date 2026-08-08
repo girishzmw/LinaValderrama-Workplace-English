@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 4 — Pre-Learning: Conditionals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12232E; --ink-2:#1B3446; --parchment:#F7F4EE; --parchment-2:#EFEAE0;
+    --brass:#C08A3E; --brass-dark:#96682A; --slate:#243B4A; --slate-soft:#5B6E7A;
+    --success:#3F7D5C; --success-bg:#E7F0EA; --error:#B8563E; --error-bg:#F6E9E3;
+    --line:rgba(18,35,46,0.14); --shadow: 0 12px 28px rgba(18,35,46,0.10);
+    --whatsapp:#3F7D5C;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--parchment-2);font-family:'Inter',sans-serif;color:var(--slate);line-height:1.6;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+  .hero{background:var(--ink);color:var(--parchment);padding:52px 20px 64px;position:relative;overflow:hidden;}
+  .hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:2;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:0 0 14px;}
+  .hero h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.15;margin:0 0 14px;}
+  .hero p{font-size:16px;color:#C9D3D9;max-width:560px;margin:0;}
+  .branch-svg{position:absolute;right:-40px;top:-20px;opacity:.35;width:260px;}
+
+  .rail{display:flex;gap:6px;max-width:760px;margin:-26px auto 0;padding:0 20px;position:relative;z-index:3;}
+  .rail-seg{flex:1;height:5px;border-radius:3px;background:rgba(18,35,46,0.14);overflow:hidden;}
+  .rail-seg .fill{height:100%;width:0%;background:var(--brass);transition:width .4s ease;}
+
+  .stage{background:var(--parchment);border:1px solid var(--line);border-radius:14px;margin-top:28px;padding:32px 30px;box-shadow:var(--shadow);opacity:.35;pointer-events:none;transition:opacity .3s ease;}
+  .stage.active{opacity:1;pointer-events:auto;}
+  .stage.done{opacity:1;pointer-events:auto;}
+  .stage-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+  .stage-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--brass-dark);background:#F0E4CE;border-radius:5px;padding:3px 8px;letter-spacing:.05em;}
+  .stage-label{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-soft);}
+  .stage h2{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:8px 0 6px;color:var(--ink);}
+  .stage .sub{color:var(--slate-soft);font-size:15px;margin:0 0 22px;}
+
+  .fork-tag{display:inline-flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:10px;}
+  .fork-tag.now{background:#E4EEF1;color:#2C6178;}
+  .fork-tag.past{background:#EFE4E4;color:#8C4A3F;}
+  .example-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px;}
+  @media(max-width:600px){.example-grid{grid-template-columns:1fr;}}
+  .ex-card{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:#FCFBF8;}
+  .ex-card.everyday{border-left:3px solid #8AA6B1;}
+  .ex-card.work{border-left:3px solid var(--brass);}
+  .ex-card .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--slate-soft);}
+  .ex-card p{margin:6px 0 0;font-size:15.5px;}
+  .ex-card .if-part{color:#8C4A3F;font-weight:600;}
+  .ex-card .then-part{color:#2C6178;font-weight:600;}
+
+  .q-block{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line);}
+  .q-block:last-child{border-bottom:none;}
+  .q-text{font-size:15.5px;font-weight:600;color:var(--ink);margin-bottom:12px;}
+  .opts{display:flex;flex-direction:column;gap:8px;}
+  .opt{display:flex;align-items:flex-start;gap:10px;border:1px solid var(--line);border-radius:9px;padding:11px 14px;cursor:pointer;font-size:14.5px;background:#fff;transition:all .15s;}
+  .opt:hover{border-color:var(--brass);}
+  .opt input{margin-top:3px;accent-color:var(--brass);}
+  .opt.correct{background:var(--success-bg);border-color:var(--success);}
+  .opt.incorrect{background:var(--error-bg);border-color:var(--error);}
+  .feedback{display:none;margin-top:10px;padding:10px 14px;border-radius:8px;font-size:14px;}
+  .feedback.show{display:block;}
+  .feedback.correct-fb{background:var(--success-bg);color:var(--success);}
+  .feedback.incorrect-fb{background:var(--error-bg);color:var(--error);}
+
+  .rule-box{background:var(--ink);color:var(--parchment);border-radius:12px;padding:26px 26px;margin-bottom:10px;}
+  .rule-half{margin-bottom:18px;}
+  .rule-half:last-child{margin-bottom:0;}
+  .rule-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--brass);margin:0 0 8px;}
+  .rule-formula{font-family:'IBM Plex Mono',monospace;font-size:14px;background:rgba(255,255,255,0.07);border-radius:7px;padding:10px 14px;margin:0 0 8px;}
+  .rule-note{font-size:14px;color:#C9D3D9;margin:0;}
+
+  .gap-input{font-family:'Inter',sans-serif;font-size:14.5px;border:1.5px solid var(--line);border-radius:6px;padding:6px 10px;width:150px;margin:0 4px;background:#fff;color:var(--ink);}
+  .gap-input:focus{outline:none;border-color:var(--brass);}
+  .gap-input.correct{border-color:var(--success);background:var(--success-bg);}
+  .gap-input.incorrect{border-color:var(--error);background:var(--error-bg);}
+  .check-btn{font-family:'Inter',sans-serif;font-weight:600;font-size:14px;background:var(--ink);color:var(--parchment);border:none;padding:9px 20px;border-radius:7px;cursor:pointer;margin-top:4px;}
+  .check-btn:hover{background:var(--brass-dark);}
+  .quiz-score{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--slate-soft);margin-top:14px;}
+
+  .write-card{background:#FCFBF8;border:1px solid var(--line);border-radius:12px;padding:22px 24px;margin-bottom:18px;}
+  .write-card .prompt-title{font-family:'Fraunces',serif;font-size:18px;color:var(--ink);margin:0 0 10px;}
+  .write-card ul{margin:10px 0 0;padding-left:20px;font-size:14.5px;}
+  .write-card li{margin-bottom:6px;}
+  .whatsapp-note{
+    display:flex;align-items:flex-start;gap:12px;
+    background:#E7F0EA;border:1px solid #C9DFCF;border-radius:10px;
+    padding:16px 18px;margin-top:6px;
+  }
+  .whatsapp-note svg{flex-shrink:0;margin-top:2px;}
+  .whatsapp-note p{margin:0;font-size:14px;color:var(--success);}
+  .whatsapp-note strong{display:block;font-size:14.5px;margin-bottom:4px;}
+
+  .continue-btn{display:inline-flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;background:var(--brass);color:var(--ink);border:none;padding:11px 24px;border-radius:8px;cursor:pointer;margin-top:20px;transition:transform .15s;}
+  .continue-btn:hover{transform:translateY(-1px);}
+  .continue-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .footer{text-align:center;font-size:12.5px;color:var(--slate-soft);margin-top:40px;padding-top:20px;border-top:1px solid var(--line);}
+  .lock-msg{font-size:13px;color:var(--slate-soft);font-style:italic;margin-top:10px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="branch-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 100 L80 100" stroke="#C08A3E" stroke-width="2" fill="none"/>
+    <path d="M80 100 L150 50" stroke="#C08A3E" stroke-width="2" fill="none"/>
+    <path d="M80 100 L150 150" stroke="#C08A3E" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+    <circle cx="20" cy="100" r="5" fill="#C08A3E"/>
+    <circle cx="150" cy="50" r="5" fill="#C08A3E"/>
+    <circle cx="150" cy="150" r="5" fill="#C08A3E" opacity="0.5"/>
+  </svg>
+  <div class="hero-inner">
+    <p class="eyebrow">Session 4 · Pre-Learning</p>
+    <h1>If things had gone differently…</h1>
+    <p>Conditionals for scenario planning — imagining the present, and reckoning with the past. About 40 minutes, five short stages.</p>
+  </div>
+</div>
+
+<div class="rail">
+  <div class="rail-seg" id="rail-1"><div class="fill"></div></div>
+  <div class="rail-seg" id="rail-2"><div class="fill"></div></div>
+  <div class="rail-seg" id="rail-3"><div class="fill"></div></div>
+  <div class="rail-seg" id="rail-4"><div class="fill"></div></div>
+  <div class="rail-seg" id="rail-5"><div class="fill"></div></div>
+</div>
+
+<div class="wrap">
+
+  <div class="stage active" id="stage1">
+    <div class="stage-head"><span class="stage-num">01</span><span class="stage-label">Notice the pattern</span></div>
+    <h2>Two kinds of "what if"</h2>
+    <p class="sub">Read the eight sentences below. Don't worry about naming the grammar yet — just notice what each one is really talking about.</p>
+
+    <div class="fork-tag now">Still possible / imagined</div>
+    <div class="example-grid">
+      <div class="ex-card everyday"><span class="tag">Everyday</span>
+        <p><span class="if-part">If I had</span> a bigger kitchen, <span class="then-part">I would host</span> dinner parties every month.</p></div>
+      <div class="ex-card work"><span class="tag">Work</span>
+        <p><span class="if-part">If our engagement score dropped</span> 15% next quarter, <span class="then-part">we would launch</span> an emergency listening tour.</p></div>
+      <div class="ex-card everyday"><span class="tag">Everyday</span>
+        <p><span class="if-part">If she lived</span> closer to the office, <span class="then-part">she wouldn't need</span> a car.</p></div>
+      <div class="ex-card work"><span class="tag">Work</span>
+        <p><span class="if-part">If the budget doubled</span>, <span class="then-part">HR would hire</span> three more business partners.</p></div>
+    </div>
+
+    <div class="fork-tag past">Already over / can't be changed</div>
+    <div class="example-grid">
+      <div class="ex-card everyday"><span class="tag">Everyday</span>
+        <p><span class="if-part">If I had left</span> the house five minutes earlier, <span class="then-part">I wouldn't have missed</span> the bus.</p></div>
+      <div class="ex-card work"><span class="tag">Work</span>
+        <p><span class="if-part">If the team had rolled out</span> the pulse survey in January, <span class="then-part">they would have caught</span> the warning signs sooner.</p></div>
+      <div class="ex-card everyday"><span class="tag">Everyday</span>
+        <p><span class="if-part">If she had known</span> about the traffic, <span class="then-part">she would have taken</span> the metro instead.</p></div>
+      <div class="ex-card work"><span class="tag">Work</span>
+        <p><span class="if-part">If HR had communicated</span> the restructuring plan earlier, <span class="then-part">employees wouldn't have felt</span> blindsided.</p></div>
+    </div>
+
+    <button class="continue-btn" onclick="unlockStage(2, this)">I've read them — continue →</button>
+  </div>
+
+  <div class="stage" id="stage2">
+    <div class="stage-head"><span class="stage-num">02</span><span class="stage-label">Concept check</span></div>
+    <h2>What are these sentences actually doing?</h2>
+    <p class="sub">Answer based on what you noticed above — there's no rule box yet, just your own observation.</p>
+
+    <div class="q-block" data-q="1">
+      <p class="q-text">1. The four "Still possible / imagined" sentences are about a time that is —</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q1" value="wrong">Finished and unchangeable</label>
+        <label class="opt"><input type="radio" name="q1" value="right">Present or future — still open</label>
+        <label class="opt"><input type="radio" name="q1" value="wrong">Always true, a general fact</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="2">
+      <p class="q-text">2. The four "Already over" sentences describe events that —</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q2" value="wrong">Might still happen</label>
+        <label class="opt"><input type="radio" name="q2" value="right">Happened (or didn't) in the past, and can't be undone</label>
+        <label class="opt"><input type="radio" name="q2" value="wrong">Are scheduled for next year</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="3">
+      <p class="q-text">3. Look at "If I had a bigger kitchen" and "If she lived closer." What verb form follows <em>if</em> in the "still possible" group?</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q3" value="right">Past simple</label>
+        <label class="opt"><input type="radio" name="q3" value="wrong">Past perfect</label>
+        <label class="opt"><input type="radio" name="q3" value="wrong">Present simple</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="4">
+      <p class="q-text">4. Now look at "If I had left" and "If she had known." What verb form follows <em>if</em> in the "already over" group?</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q4" value="wrong">Past simple</label>
+        <label class="opt"><input type="radio" name="q4" value="right">Past perfect (had + past participle)</label>
+        <label class="opt"><input type="radio" name="q4" value="wrong">Would + verb</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="5">
+      <p class="q-text">5. In "If our engagement score dropped 15%..." — is that drop something that has actually happened?</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q5" value="wrong">Yes, it's a real, current result</label>
+        <label class="opt"><input type="radio" name="q5" value="right">No — it's an imagined, hypothetical situation</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="q-block" data-q="6">
+      <p class="q-text">6. Compare "If our engagement score dropped..." (still possible) with "If the team had rolled out the survey in January..." (already over). What's the key difference between them?</p>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q6" value="wrong">One is about HR, the other isn't</label>
+        <label class="opt"><input type="radio" name="q6" value="right">One imagines something in the future; the other reimagines something that already happened</label>
+        <label class="opt"><input type="radio" name="q6" value="wrong">There's no real difference</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <button class="continue-btn" id="s2-continue" disabled onclick="unlockStage(3, this)">See the rule →</button>
+    <p class="lock-msg" id="s2-lock">Answer all six questions to unlock the rule.</p>
+  </div>
+
+  <div class="stage" id="stage3">
+    <div class="stage-head"><span class="stage-num">03</span><span class="stage-label">The rule</span></div>
+    <h2>Confirming what you found</h2>
+    <p class="sub">This is exactly what you noticed above — just named properly now.</p>
+
+    <div class="rule-box">
+      <div class="rule-half">
+        <p class="rule-title">2nd Conditional — unreal present / future</p>
+        <p class="rule-formula">If + past simple, ... would / could / might + base verb</p>
+        <p class="rule-note">For a situation that is imagined, unlikely, or hypothetical — but still <strong>possible in principle</strong>, now or later.<br>
+        <em>If the score dropped 15%, we would launch a listening tour.</em></p>
+      </div>
+      <div class="rule-half">
+        <p class="rule-title">3rd Conditional — unreal past</p>
+        <p class="rule-formula">If + past perfect, ... would / could / might + have + past participle</p>
+        <p class="rule-note">For a situation in the <strong>past that did not happen</strong> — and cannot be changed now. Pure "what if it had been different."<br>
+        <em>If the team had rolled out the survey in January, they would have caught the signs sooner.</em></p>
+      </div>
+    </div>
+    <p class="lock-msg" style="margin-top:16px;">One important habit: keep each sentence <strong>entirely</strong> in one type or the other. Don't mix a past-simple "if" clause with a "would have" result — that blends the two forms. If the past perfect part of this feels shaky after last session, that's exactly the connection worth noticing: the 3rd conditional is really just past perfect wearing a hypothetical hat.</p>
+
+    <button class="continue-btn" onclick="unlockStage(4, this)">Try it myself →</button>
+  </div>
+
+  <div class="stage" id="stage4">
+    <div class="stage-head"><span class="stage-num">04</span><span class="stage-label">Consolidation quiz</span></div>
+    <h2>Complete each sentence</h2>
+    <p class="sub">Type the correct form of the verb in brackets. Check your answers when you're done with all six.</p>
+
+    <div class="q-block gap-q">
+      <p class="q-text">1. If we <input type="text" class="gap-input" data-a1="1"> (survey) employees more often, we <input type="text" class="gap-input" data-a1="2"> (notice) the drop earlier.</p>
+    </div>
+    <div class="q-block gap-q">
+      <p class="q-text">2. If I <input type="text" class="gap-input" data-a2="1"> (have) more vacation days, I <input type="text" class="gap-input" data-a2="2"> (travel) more.</p>
+    </div>
+    <div class="q-block gap-q">
+      <p class="q-text">3. If the team <input type="text" class="gap-input" data-a3="1"> (communicate) the change sooner, staff <input type="text" class="gap-input" data-a3="2"> (not / feel) blindsided.</p>
+    </div>
+    <div class="q-block gap-q">
+      <p class="q-text">4. If our turnover rate <input type="text" class="gap-input" data-a4="1"> (increase) again this year, what <input type="text" class="gap-input" data-a4="2"> (you / do)?</p>
+    </div>
+    <div class="q-block gap-q">
+      <p class="q-text">5. If she <input type="text" class="gap-input" data-a5="1"> (know) about the reorganization, she <input type="text" class="gap-input" data-a5="2"> (not / resign).</p>
+    </div>
+    <div class="q-block gap-q">
+      <p class="q-text">6. If I <input type="text" class="gap-input" data-a6="1"> (be) the HR director, I <input type="text" class="gap-input" data-a6="2"> (change) the onboarding process.</p>
+    </div>
+
+    <button class="check-btn" onclick="checkQuiz()">Check my answers</button>
+    <p class="quiz-score" id="quiz-score"></p>
+
+    <button class="continue-btn" id="s4-continue" style="display:none;" onclick="unlockStage(5, this)">Go to the writing task →</button>
+  </div>
+
+  <div class="stage" id="stage5">
+    <div class="stage-head"><span class="stage-num">05</span><span class="stage-label">Application — write it out</span></div>
+    <h2>Your own scenario</h2>
+    <p class="sub">This one's handwritten, not typed.</p>
+
+    <div class="write-card">
+      <p class="prompt-title">Write 5–8 sentences</p>
+      <p>Describe a risk or scenario-planning situation from your own career. Include:</p>
+      <ul>
+        <li>At least one <strong>2nd conditional</strong> sentence — what you would do if a similar situation happened again.</li>
+        <li>At least one <strong>3rd conditional</strong> sentence — looking back, what you would have done differently.</li>
+      </ul>
+      <p style="margin-top:12px;">Write it by hand, the way you did for Session 2.</p>
+    </div>
+
+    <div class="whatsapp-note">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M17.6 6.3A8.86 8.86 0 0 0 12 4a8.94 8.94 0 0 0-7.7 13.5L3 21l3.6-1.3A8.9 8.9 0 0 0 12 21a8.94 8.94 0 0 0 8.9-9 8.87 8.87 0 0 0-3.3-5.7Z" stroke="#3F7D5C" stroke-width="1.5"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5.5 0 .8-.4.7-.9l-.3-1.2a.7.7 0 0 0-.8-.5l-1 .2a4.6 4.6 0 0 1-2.7-2.7l.2-1a.7.7 0 0 0-.5-.8l-1.2-.3c-.5-.1-.9.2-.9.7Z" fill="#3F7D5C"/></svg>
+      <p><strong>Submitting your work</strong>Take a clear photo of your handwritten answer and send it on WhatsApp before class — same as Session 2.</p>
+    </div>
+
+    <p class="lock-msg">That's it for pre-learning — bring your photo and any new vocabulary you looked up along the way to class.</p>
+  </div>
+
+  <div class="footer">© Girish — English Consolidation Course · Session 4 · Confidential teaching material</div>
+</div>
+
+<script>
+function updateProgress(n){ for(let i=1;i<=5;i++){ document.querySelector('#rail-'+i+' .fill').style.width = i<=n ? '100%':'0%'; } }
+updateProgress(1);
+function unlockStage(n, btn){
+  document.getElementById('stage'+n).classList.add('active');
+  document.getElementById('stage'+n).scrollIntoView({behavior:'smooth', block:'start'});
+  updateProgress(n);
+  if(btn){ btn.closest('.stage').classList.add('done'); }
+}
+const qNames = ['q1','q2','q3','q4','q5','q6'];
+let answered = {};
+qNames.forEach(name=>{
+  document.querySelectorAll('input[name="'+name+'"]').forEach(input=>{
+    input.addEventListener('change', function(){
+      const block = this.closest('.q-block');
+      const fb = block.querySelector('.feedback');
+      const opts = block.querySelectorAll('.opt');
+      opts.forEach(o=>o.classList.remove('correct','incorrect'));
+      if(this.value === 'right'){
+        this.closest('.opt').classList.add('correct');
+        fb.textContent = "Yes — that's it.";
+        fb.className = 'feedback show correct-fb';
+      } else {
+        this.closest('.opt').classList.add('incorrect');
+        fb.textContent = "Not quite — look at the examples again.";
+        fb.className = 'feedback show incorrect-fb';
+      }
+      answered[name] = true;
+      if(Object.keys(answered).length === qNames.length){
+        document.getElementById('s2-continue').disabled = false;
+        document.getElementById('s2-lock').style.display = 'none';
+      }
+    });
+  });
+});
+function normalize(s){ return s.trim().toLowerCase().replace(/\s+/g,' '); }
+const gapAnswers = {
+  'a1':['had surveyed','would have noticed'],
+  'a2':['had','would travel'],
+  'a3':['had communicated',"would not have felt|wouldn't have felt"],
+  'a4':['increased','would you do'],
+  'a5':['had known',"would not have resigned|wouldn't have resigned"],
+  'a6':['were|was','would change']
+};
+function checkQuiz(){
+  let correct = 0, total = 0;
+  Object.keys(gapAnswers).forEach(key=>{
+    [1,2].forEach(idx=>{
+      const el = document.querySelector('[data-'+key+'="'+idx+'"]');
+      if(!el) return;
+      total++;
+      const expected = gapAnswers[key][idx-1];
+      const pattern = new RegExp('^('+expected+')$','i');
+      if(pattern.test(normalize(el.value))){
+        el.classList.add('correct'); el.classList.remove('incorrect');
+        correct++;
+      } else {
+        el.classList.add('incorrect'); el.classList.remove('correct');
+      }
+    });
+  });
+  document.getElementById('quiz-score').textContent = correct + ' / ' + total + ' correct. Fix any red boxes and check again, or continue when ready.';
+  document.getElementById('s4-continue').style.display = 'inline-flex';
+}
+</script>
+
+</body>
+</html>
