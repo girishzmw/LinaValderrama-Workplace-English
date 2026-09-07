@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Session 5 — Pre-Learning: The Passive Voice</title>
+<style>
+  :root {
+    --ink: #1D2B28;
+    --paper: #F1EEE4;
+    --paper-raised: #FBF9F3;
+    --green-deep: #22403A;
+    --green-mid: #3A5C52;
+    --amber: #B9822F;
+    --amber-soft: #E8D2AA;
+    --line: #C9C2AE;
+    --wrong: #A24C3F;
+    --right: #3D6B4C;
+    --shadow: 0 1px 0 rgba(29,43,40,0.06);
+    --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --sans: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.55;
+    padding-bottom: 6rem;
+  }
+
+  .wrap {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  header.masthead {
+    background: var(--green-deep);
+    color: var(--paper-raised);
+    padding: 2.6rem 1.5rem 2.2rem;
+    margin-bottom: 2.5rem;
+  }
+  header.masthead .inner {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  header.masthead .kicker {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--amber-soft);
+    margin: 0 0 0.4rem;
+  }
+  header.masthead h1 {
+    font-family: var(--serif);
+    font-size: 2.1rem;
+    font-weight: 500;
+    margin: 0 0 0.6rem;
+    line-height: 1.2;
+  }
+  header.masthead p.dek {
+    font-size: 1.02rem;
+    max-width: 46ch;
+    color: #DCE4DF;
+    margin: 0;
+  }
+
+  .progress-rail {
+    display: flex;
+    gap: 0.4rem;
+    margin: 1.6rem 0 0;
+  }
+  .progress-rail .seg {
+    flex: 1;
+    height: 4px;
+    background: rgba(241,238,228,0.25);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-rail .seg .fill {
+    height: 100%;
+    width: 0%;
+    background: var(--amber);
+    transition: width 0.4s ease;
+  }
+
+  section.stage {
+    margin-bottom: 3rem;
+  }
+
+  .stage-label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin-bottom: 0.9rem;
+  }
+  .stage-label .num {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    color: var(--amber);
+    min-width: 2ch;
+  }
+  .stage-label h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.4rem;
+    margin: 0;
+    color: var(--green-deep);
+  }
+  .stage-note {
+    font-size: 0.92rem;
+    color: var(--green-mid);
+    margin: -0.3rem 0 1.2rem;
+    max-width: 52ch;
+  }
+
+  .card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: 1.3rem 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1.1rem;
+  }
+  .pair:last-child { margin-bottom: 0; }
+  .pair .sentence {
+    padding: 0.75rem 0.9rem;
+    border-left: 3px solid var(--line);
+    background: var(--paper);
+    font-size: 1.02rem;
+  }
+  .pair .sentence.everyday { border-left-color: #8B9A8E; }
+  .pair .sentence.professional { border-left-color: var(--amber); }
+  .pair .sentence .tag {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: var(--green-mid);
+    margin-bottom: 0.2rem;
+    font-style: italic;
+  }
+  .pair .sentence .verb {
+    cursor: pointer;
+    border-bottom: 2px dotted var(--amber);
+    padding: 0.05rem 0.1rem;
+    transition: background 0.2s ease;
+  }
+  .pair .sentence .verb.marked {
+    background: var(--amber-soft);
+    border-bottom-style: solid;
+    font-weight: 600;
+  }
+
+  .notice-tracker {
+    font-size: 0.88rem;
+    color: var(--green-mid);
+    margin-top: 0.8rem;
+    text-align: right;
+  }
+
+  .reveal-box {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.1rem;
+    background: #EFE6D2;
+    border: 1px solid var(--amber);
+    border-radius: 3px;
+    font-size: 0.95rem;
+  }
+  .reveal-box.show { display: block; }
+
+  .cc-item {
+    margin-bottom: 1.4rem;
+    padding-bottom: 1.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .cc-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .cc-item p.q {
+    font-weight: 600;
+    margin: 0 0 0.7rem;
+  }
+  .cc-item .opt, .quiz-item .opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--sans);
+    font-size: 0.96rem;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .cc-item .opt:hover, .quiz-item .opt:hover { border-color: var(--green-mid); }
+  .cc-item .opt.correct, .quiz-item .opt.correct { background: #E2EFE4; border-color: var(--right); }
+  .cc-item .opt.incorrect, .quiz-item .opt.incorrect { background: #F3E1DD; border-color: var(--wrong); }
+  .cc-item .fb, .quiz-item .fb {
+    display: none;
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 3px;
+  }
+  .cc-item .fb.show, .quiz-item .fb.show { display: block; }
+  .cc-item .fb.correct-fb, .quiz-item .fb.correct-fb { background: #E2EFE4; color: var(--right); }
+  .cc-item .fb.incorrect-fb, .quiz-item .fb.incorrect-fb { background: #F3E1DD; color: var(--wrong); }
+
+  .rule-block h3 {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    margin: 1.1rem 0 0.4rem;
+    color: var(--green-deep);
+  }
+  .rule-block h3:first-child { margin-top: 0; }
+  .formula {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    background: var(--green-deep);
+    color: var(--paper-raised);
+    padding: 0.9rem 1.1rem;
+    border-radius: 3px;
+    text-align: center;
+    margin: 0.8rem 0 1.1rem;
+  }
+  .formula .agent {
+    color: var(--amber-soft);
+    font-style: italic;
+  }
+  ul.rule-list { margin: 0.4rem 0 0; padding-left: 1.2rem; }
+  ul.rule-list li { margin-bottom: 0.5rem; }
+
+  .idiom-box {
+    background: var(--paper);
+    border: 1px dashed var(--amber);
+    border-radius: 3px;
+    padding: 1rem 1.1rem;
+    margin-top: 1.3rem;
+  }
+  .idiom-box .idiom-title {
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--amber);
+    font-size: 1.05rem;
+    margin: 0 0 0.3rem;
+  }
+  .idiom-box p { margin: 0.3rem 0; font-size: 0.94rem; }
+
+  .quiz-item { margin-bottom: 1.5rem; }
+  .quiz-item:last-of-type { margin-bottom: 0.5rem; }
+  .quiz-item .prompt {
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+  }
+  .quiz-item .source {
+    font-style: italic;
+    color: var(--green-mid);
+    margin: 0 0 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .score-panel {
+    margin-top: 1.2rem;
+    padding: 1rem 1.1rem;
+    background: var(--green-deep);
+    color: var(--paper-raised);
+    border-radius: 3px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--serif);
+    font-size: 1.05rem;
+  }
+  .score-panel.show { display: flex; }
+
+  .btn {
+    display: inline-block;
+    background: var(--amber);
+    color: var(--paper-raised);
+    border: none;
+    border-radius: 3px;
+    padding: 0.65rem 1.3rem;
+    font-family: var(--sans);
+    font-size: 0.98rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.6rem;
+  }
+  .btn:hover { background: #A4741F; }
+  .btn:disabled {
+    background: #C9C2AE;
+    cursor: not-allowed;
+  }
+  .btn.secondary {
+    background: transparent;
+    border: 1px solid var(--green-mid);
+    color: var(--green-deep);
+  }
+  .btn.secondary:hover { background: var(--paper); }
+
+  .video-slot {
+    background: var(--green-deep);
+    color: var(--paper-raised);
+    border-radius: 3px;
+    padding: 2.4rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1.3rem;
+  }
+  .video-slot .icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+  .video-slot p { margin: 0.3rem 0; font-size: 0.92rem; color: #CBD6D0; }
+  .video-slot p.main { color: var(--paper-raised); font-size: 1rem; }
+
+  .app-q { margin-bottom: 1.3rem; }
+  .app-q label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .app-q textarea {
+    width: 100%;
+    min-height: 4.5rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-family: var(--sans);
+    font-size: 0.98rem;
+    resize: vertical;
+    background: var(--paper-raised);
+    color: var(--ink);
+  }
+  .app-q textarea:focus {
+    outline: none;
+    border-color: var(--green-mid);
+  }
+  .charcount {
+    font-size: 0.78rem;
+    color: var(--green-mid);
+    text-align: right;
+    margin-top: 0.2rem;
+  }
+
+  .stage-complete-flag {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--right);
+    font-weight: 600;
+    font-size: 0.92rem;
+    margin-top: 0.9rem;
+  }
+  .stage-complete-flag.show { display: flex; }
+
+  footer.finish {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+  footer.finish .card {
+    background: var(--green-deep);
+    color: var(--paper-raised);
+    border: none;
+  }
+  footer.finish h3 {
+    font-family: var(--serif);
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+  }
+  footer.finish p { color: #DCE4DF; font-size: 0.95rem; }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="inner">
+    <p class="kicker">Session 5 · Pre-Learning</p>
+    <h1>The Passive Voice</h1>
+    <p class="dek">Formal policy and process language — how organizations describe what happens without always naming who does it.</p>
+    <div class="progress-rail">
+      <div class="seg"><div class="fill" id="fill-1"></div></div>
+      <div class="seg"><div class="fill" id="fill-2"></div></div>
+      <div class="seg"><div class="fill" id="fill-3"></div></div>
+      <div class="seg"><div class="fill" id="fill-4"></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- STAGE 1: NOTICE -->
+  <section class="stage active" id="stage-1">
+    <div class="stage-label"><span class="num">1</span><h2>Notice the pattern</h2></div>
+    <p class="stage-note">Read each pair below. In the second sentence of each pair, click the verb phrase that feels different from the one above it.</p>
+
+    <div class="card">
+      <div class="pair">
+        <div class="sentence everyday"><span class="tag">everyday</span>A neighbor <span class="verb" data-id="1">left</span> three packages at my door yesterday.</div>
+        <div class="sentence everyday"><span class="tag">everyday</span>Three packages <span class="verb" data-id="2">were left</span> at my door yesterday.</div>
+      </div>
+      <div class="pair">
+        <div class="sentence professional"><span class="tag">HR / workplace</span>HR <span class="verb" data-id="3">revised</span> the parental leave policy in March.</div>
+        <div class="sentence professional"><span class="tag">HR / workplace</span>The parental leave policy <span class="verb" data-id="4">was revised</span> in March.</div>
+      </div>
+      <div class="pair">
+        <div class="sentence everyday"><span class="tag">everyday</span>Someone <span class="verb" data-id="5">broke into</span> my car last week.</div>
+        <div class="sentence everyday"><span class="tag">everyday</span>My car <span class="verb" data-id="6">was broken into</span> last week.</div>
+      </div>
+      <div class="pair">
+        <div class="sentence professional"><span class="tag">HR / workplace</span>The board <span class="verb" data-id="7">will announce</span> the merger next month.</div>
+        <div class="sentence professional"><span class="tag">HR / workplace</span>The merger <span class="verb" data-id="8">will be announced</span> next month.</div>
+      </div>
+      <div class="pair">
+        <div class="sentence everyday"><span class="tag">everyday</span>My sister <span class="verb" data-id="9">is cooking</span> dinner right now.</div>
+        <div class="sentence everyday"><span class="tag">everyday</span>Dinner <span class="verb" data-id="10">is being cooked</span> right now.</div>
+      </div>
+      <div class="pair">
+        <div class="sentence professional"><span class="tag">HR / workplace</span>The compliance team <span class="verb" data-id="11">must complete</span> the audit by Friday.</div>
+        <div class="sentence professional"><span class="tag">HR / workplace</span>The audit <span class="verb" data-id="12">must be completed</span> by Friday.</div>
+      </div>
+
+      <p class="notice-tracker" id="notice-tracker">0 of 6 pairs explored</p>
+
+      <div class="reveal-box" id="reveal-box">
+        Look at what you marked. In every second sentence, the thing that used to be the <em>object</em> ("three packages," "the policy," "my car," "the merger," "dinner," "the audit") has moved to the front and become the subject. And notice something else: in several of these, the sentence never tells you who did it — no neighbor, no board, no "someone." Hold onto that observation for the next stage.
+      </div>
+      <button class="btn" id="btn-stage1-next">Continue to Concept Check</button>
+    </div>
+  </section>
+
+  <!-- STAGE 2: CONCEPT CHECK -->
+  <section class="stage" id="stage-2">
+    <div class="stage-label"><span class="num">2</span><h2>Concept check</h2></div>
+    <p class="stage-note">Answer each question based on what you noticed above. There's no penalty for a wrong guess — the feedback is the point.</p>
+
+    <div class="card">
+      <div class="cc-item" data-qid="cc1">
+        <p class="q">1. In "Three packages were left at my door," do we know who left them?</p>
+        <button class="opt" data-correct="false">Yes — a neighbor.</button>
+        <button class="opt" data-correct="true">No — the sentence doesn't say.</button>
+        <div class="fb correct-fb">Exactly. The sentence works perfectly well without naming who did it — because in this case, it isn't the important part.</div>
+        <div class="fb incorrect-fb">Look again — the word "neighbor" only appears in the first sentence, not the second.</div>
+      </div>
+
+      <div class="cc-item" data-qid="cc2">
+        <p class="q">2. In "was revised" and "was broken," what verb form comes right after was/were?</p>
+        <button class="opt" data-correct="false">The base form (revise, break)</button>
+        <button class="opt" data-correct="true">The past participle (revised, broken)</button>
+        <button class="opt" data-correct="false">The -ing form (revising, breaking)</button>
+        <div class="fb correct-fb">Right. Was/were (or am/is/are, or will be) always pairs with the past participle — the same form you already use with "have."</div>
+        <div class="fb incorrect-fb">Not quite. Compare "was revised" with "has revised" — same verb form, different helping verb.</div>
+      </div>
+
+      <div class="cc-item" data-qid="cc3">
+        <p class="q">3. Which version sounds more like something you'd read in an official HR document — "HR revised the policy" or "The policy was revised"?</p>
+        <button class="opt" data-correct="false">"HR revised the policy" — it names who's responsible.</button>
+        <button class="opt" data-correct="true">"The policy was revised" — it reads more neutral and official.</button>
+        <div class="fb correct-fb">That's the instinct organizations lean on. Policy language usually foregrounds the change itself, not the department behind it — it reads as more objective and less personal.</div>
+        <div class="fb incorrect-fb">Try reading both out loud. "The policy was revised" is the one that sounds like it belongs in a handbook.</div>
+      </div>
+
+      <div class="cc-item" data-qid="cc4">
+        <p class="q">4. In "The merger will be announced next month," is the person doing the announcing named?</p>
+        <button class="opt" data-correct="true">No.</button>
+        <button class="opt" data-correct="false">Yes, the board.</button>
+        <div class="fb correct-fb">Correct. "By the board" could be added, but it isn't necessary — the announcement itself is the news.</div>
+        <div class="fb incorrect-fb">"The board" appears in the first sentence only. The second sentence drops it entirely.</div>
+      </div>
+
+      <div class="cc-item" data-qid="cc5">
+        <p class="q">5. Compare "The board will announce the merger" and "The merger will be announced." What happened to "the merger"?</p>
+        <button class="opt" data-correct="false">It disappeared from the sentence.</button>
+        <button class="opt" data-correct="true">It moved from object to subject.</button>
+        <div class="fb correct-fb">That's the mechanical heart of the passive: the thing that received the action moves to the front and becomes the grammatical subject.</div>
+        <div class="fb incorrect-fb">Look at where "the merger" sits in each sentence — it's still there, just in a different position.</div>
+      </div>
+
+      <div class="stage-complete-flag" id="flag-2">✓ Concept check complete — the rule is unlocked below.</div>
+    </div>
+  </section>
+
+  <!-- STAGE 3: THE RULE -->
+  <section class="stage" id="stage-3">
+    <div class="stage-label"><span class="num">3</span><h2>The rule</h2></div>
+    <p class="stage-note">This confirms what you just worked out for yourself.</p>
+
+    <div class="card rule-block">
+      <h3>Form</h3>
+      <div class="formula">be&nbsp;+&nbsp;past participle&nbsp;&nbsp;<span class="agent">( + by + agent, optional )</span></div>
+      <p style="margin-top:-0.4rem; font-size:0.92rem; color:var(--green-mid);">"Be" changes with tense: is/am/are, was/were, will be, has/have been, is/are being, must/should/can be...</p>
+
+      <h3>Why organizations use it</h3>
+      <ul class="rule-list">
+        <li>The person responsible is <strong>unknown</strong> ("My car was broken into last week.")</li>
+        <li>The person responsible is <strong>obvious or unimportant</strong> to the message ("The audit must be completed by Friday" — everyone knows compliance owns this.)</li>
+        <li>The writer wants to sound <strong>objective and formal</strong> — this is why policies, procedures, and official announcements lean heavily on the passive rather than "we changed this."</li>
+        <li>The focus belongs on the <strong>result</strong>, not the doer ("The merger will be announced next month.")</li>
+      </ul>
+
+      <h3>Add the agent only when it matters</h3>
+      <p style="font-size:0.95rem;">"The decision was influenced by market pressure" — here, naming the cause is the whole point, so "by" earns its place. Most policy language leaves it out entirely.</p>
+
+      <h3>It stacks with modals</h3>
+      <p style="font-size:0.95rem;">must be completed · should be reviewed · will be announced · can be extended — the same be + past participle pattern, just with a modal in front.</p>
+
+      <div class="idiom-box">
+        <p class="idiom-title">Phrase of the session: "set in stone"</p>
+        <p><strong>Meaning:</strong> fixed and unlikely to change.</p>
+        <p><strong>In passive-friendly context:</strong> "The new remote-work policy isn't set in stone yet — it will be reviewed again in six months."</p>
+      </div>
+
+      <button class="btn" id="btn-stage3-next">Continue to Consolidation Quiz</button>
+    </div>
+  </section>
+
+  <!-- STAGE 4: CONSOLIDATION QUIZ -->
+  <section class="stage" id="stage-4">
+    <div class="stage-label"><span class="num">4</span><h2>Consolidation quiz</h2></div>
+    <p class="stage-note">Choose the option that correctly applies what you just confirmed.</p>
+
+    <div class="card" id="quiz-card">
+
+      <div class="quiz-item" data-qid="q1">
+        <p class="prompt">1. "The manager sent the report yesterday." → correct passive form:</p>
+        <button class="opt" data-correct="false">The report sent by the manager yesterday.</button>
+        <button class="opt" data-correct="true">The report was sent by the manager yesterday.</button>
+        <button class="opt" data-correct="false">The report is sent by the manager yesterday.</button>
+        <button class="opt" data-correct="false">The report has send by the manager yesterday.</button>
+        <div class="fb correct-fb">Correct.</div>
+        <div class="fb incorrect-fb">Check the tense marker on "be" and the verb form after it.</div>
+      </div>
+
+      <div class="quiz-item" data-qid="q2">
+        <p class="prompt">2. "The company must complete the audit by Friday." → correct passive form:</p>
+        <button class="opt" data-correct="false">The audit must completed by Friday.</button>
+        <button class="opt" data-correct="true">The audit must be completed by Friday.</button>
+        <button class="opt" data-correct="false">The audit is must be completed by Friday.</button>
+        <button class="opt" data-correct="false">The audit must be complete by Friday.</button>
+        <div class="fb correct-fb">Correct — the modal "must" is followed by "be," then the past participle.</div>
+        <div class="fb incorrect-fb">Remember: modal + be + past participle, in that order, with nothing extra in between.</div>
+      </div>
+
+      <div class="quiz-item" data-qid="q3">
+        <p class="prompt">3. Which sentence is passive and grammatically correct?</p>
+        <button class="opt" data-correct="true">New hires are given a welcome kit on their first day.</button>
+        <button class="opt" data-correct="false">New hires given a welcome kit on their first day.</button>
+        <button class="opt" data-correct="false">New hires are give a welcome kit on their first day.</button>
+        <button class="opt" data-correct="false">New hires give a welcome kit on their first day.</button>
+        <div class="fb correct-fb">Correct — "are" plus the past participle "given."</div>
+        <div class="fb incorrect-fb">Two things to check: is "be" present, and is the verb in its past-participle form?</div>
+      </div>
+
+      <div class="quiz-item" data-qid="q4">
+        <p class="prompt">4. "Someone is reviewing your application right now." → correct passive form:</p>
+        <button class="opt" data-correct="false">Your application is reviewing right now.</button>
+        <button class="opt" data-correct="true">Your application is being reviewed right now.</button>
+        <button class="opt" data-correct="false">Your application was reviewed right now.</button>
+        <button class="opt" data-correct="false">Your application is review right now.</button>
+        <div class="fb correct-fb">Correct — the continuous passive needs "is being" + past participle.</div>
+        <div class="fb incorrect-fb">The original is in progress right now, so the passive needs the continuous form: is being + past participle.</div>
+      </div>
+
+      <div class="quiz-item" data-qid="q5">
+        <p class="prompt">5. Which sentence correctly keeps the agent, using "by"?</p>
+        <button class="opt" data-correct="false">The decision was influenced strongly the CEO.</button>
+        <button class="opt" data-correct="true">The decision was influenced strongly by the CEO.</button>
+        <button class="opt" data-correct="false">The decision influenced strongly by the CEO.</button>
+        <button class="opt" data-correct="false">The decision was influence by the CEO strongly.</button>
+        <div class="fb correct-fb">Correct.</div>
+        <div class="fb incorrect-fb">The agent always needs "by" in front of it, and "be" needs to stay in the sentence.</div>
+      </div>
+
+      <div class="quiz-item" data-qid="q6">
+        <p class="prompt">6. Which sentence has the tone most appropriate for a formal policy document?</p>
+        <button class="opt" data-correct="false">We changed the dress code policy last month.</button>
+        <button class="opt" data-correct="true">The dress code policy was changed last month.</button>
+        <button class="opt" data-correct="false">Somebody changed the dress code policy last month.</button>
+        <button class="opt" data-correct="false">The dress code policy, we changed it last month.</button>
+        <div class="fb correct-fb">Correct — this is the register question, not just the grammar question.</div>
+        <div class="fb incorrect-fb">Think about which one sounds least like a specific person is speaking.</div>
+      </div>
+
+      <div class="quiz-item" data-qid="q7">
+        <p class="prompt source">A stretch question, tying back to Session 3: "By the time she joined the team, they had already finished the project."</p>
+        <p class="prompt">7. Correct passive form of the underlined clause ("had already finished the project"):</p>
+        <button class="opt" data-correct="false">the project had already finished</button>
+        <button class="opt" data-correct="true">the project had already been finished</button>
+        <button class="opt" data-correct="false">the project was already finished</button>
+        <button class="opt" data-correct="false">the project had already being finished</button>
+        <div class="fb correct-fb">Correct — past perfect passive: had + been + past participle. The passive pattern holds even with the tense you built in Session 3.</div>
+        <div class="fb incorrect-fb">Keep "had," add "been," then the past participle — the passive rule doesn't change just because the tense is more complex.</div>
+      </div>
+
+      <div class="score-panel" id="score-panel">
+        <span>Score</span>
+        <span id="score-value">0 / 7</span>
+      </div>
+
+      <button class="btn" id="btn-stage4-next">Mark pre-learning complete</button>
+    </div>
+  </section>
+
+</div>
+
+<footer class="finish">
+  <div class="card" id="finish-card" style="display:none;">
+    <h3>Pre-learning complete</h3>
+    <p>Bring your answers to Tuesday's session — we'll start by talking through the quiz together before moving into the reading and discussion.</p>
+  </div>
+</footer>
+
+<script>
+try {
+  // ---- Persistence ----
+  // All sections are open from the start (no forced order) — this only remembers
+  // what's been done so a refresh hours later doesn't lose progress.
+  const STORAGE_KEY = 'session5-passive-voice-progress';
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : { markedVerbs: [], cc: {}, quiz: {}, finished: false };
+    } catch (e) {
+      return { markedVerbs: [], cc: {}, quiz: {}, finished: false };
+    }
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* storage unavailable — continue without persistence */ }
+  }
+
+  const state = loadState();
+
+  // ---- Stage 1: Notice ----
+  const verbs = document.querySelectorAll('.verb');
+  const markedPairs = new Set();
+
+  function refreshNoticeTracker() {
+    document.getElementById('notice-tracker').textContent = markedPairs.size + ' of 6 pairs explored';
+    setStageProgress(1, Math.round((markedPairs.size / 6) * 100));
+    if (markedPairs.size >= 6) {
+      document.getElementById('reveal-box').classList.add('show');
+    }
+  }
+
+  verbs.forEach(v => {
+    const id = v.dataset.id;
+    if (state.markedVerbs.includes(id)) v.classList.add('marked');
+    v.addEventListener('click', () => {
+      v.classList.toggle('marked');
+      if (v.classList.contains('marked')) {
+        if (!state.markedVerbs.includes(id)) state.markedVerbs.push(id);
+      } else {
+        state.markedVerbs = state.markedVerbs.filter(x => x !== id);
+      }
+      saveState();
+      recomputeMarkedPairs();
+    });
+  });
+
+  function recomputeMarkedPairs() {
+    markedPairs.clear();
+    document.querySelectorAll('.verb.marked').forEach(v => {
+      markedPairs.add(Math.floor((parseInt(v.dataset.id) - 1) / 2));
+    });
+    refreshNoticeTracker();
+  }
+  recomputeMarkedPairs();
+
+  document.getElementById('btn-stage1-next').addEventListener('click', () => {
+    scrollToStage(2);
+  });
+
+  // ---- Stage 2: Concept check ----
+  const ccItems = document.querySelectorAll('#stage-2 .cc-item');
+
+  function renderCcItem(item) {
+    const qid = item.dataset.qid;
+    const saved = state.cc[qid];
+    if (!saved) return;
+    const opts = item.querySelectorAll('.opt');
+    opts.forEach(o => {
+      o.style.pointerEvents = 'none';
+      if (o.textContent.trim() === saved.text) {
+        o.classList.add(saved.correct ? 'correct' : 'incorrect');
+      }
+    });
+    item.querySelector(saved.correct ? '.correct-fb' : '.incorrect-fb').classList.add('show');
+  }
+
+  function ccProgress() {
+    return Object.keys(state.cc).length;
+  }
+
+  ccItems.forEach(item => {
+    const qid = item.dataset.qid;
+    renderCcItem(item);
+    const opts = item.querySelectorAll('.opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (state.cc[qid]) return; // already answered
+        const correct = opt.dataset.correct === 'true';
+        state.cc[qid] = { text: opt.textContent.trim(), correct };
+        saveState();
+        opts.forEach(o => o.style.pointerEvents = 'none');
+        opt.classList.add(correct ? 'correct' : 'incorrect');
+        item.querySelector(correct ? '.correct-fb' : '.incorrect-fb').classList.add('show');
+        setStageProgress(2, Math.round((ccProgress() / ccItems.length) * 100));
+        if (ccProgress() === ccItems.length) {
+          document.getElementById('flag-2').classList.add('show');
+        }
+      });
+    });
+  });
+  setStageProgress(2, Math.round((ccProgress() / ccItems.length) * 100));
+  if (ccProgress() === ccItems.length) document.getElementById('flag-2').classList.add('show');
+
+  // ---- Stage 3: Rule ----
+  document.getElementById('btn-stage3-next').addEventListener('click', () => {
+    setStageProgress(3, 100);
+    scrollToStage(4);
+  });
+
+  // ---- Stage 4: Quiz ----
+  const quizItems = document.querySelectorAll('#stage-4 .quiz-item');
+
+  function renderQuizItem(item) {
+    const qid = item.dataset.qid;
+    const saved = state.quiz[qid];
+    if (!saved) return;
+    const opts = item.querySelectorAll('.opt');
+    opts.forEach(o => {
+      o.style.pointerEvents = 'none';
+      if (o.textContent.trim() === saved.text) {
+        o.classList.add(saved.correct ? 'correct' : 'incorrect');
+      }
+    });
+    item.querySelector(saved.correct ? '.correct-fb' : '.incorrect-fb').classList.add('show');
+  }
+
+  function quizProgress() {
+    return Object.keys(state.quiz).length;
+  }
+  function quizScoreCount() {
+    return Object.values(state.quiz).filter(a => a.correct).length;
+  }
+  function updateScorePanel() {
+    if (quizProgress() === quizItems.length) {
+      document.getElementById('score-panel').classList.add('show');
+      document.getElementById('score-value').textContent = quizScoreCount() + ' / ' + quizItems.length;
+    }
+  }
+
+  quizItems.forEach(item => {
+    const qid = item.dataset.qid;
+    renderQuizItem(item);
+    const opts = item.querySelectorAll('.opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        if (state.quiz[qid]) return; // already answered
+        const correct = opt.dataset.correct === 'true';
+        state.quiz[qid] = { text: opt.textContent.trim(), correct };
+        saveState();
+        opts.forEach(o => o.style.pointerEvents = 'none');
+        opt.classList.add(correct ? 'correct' : 'incorrect');
+        item.querySelector(correct ? '.correct-fb' : '.incorrect-fb').classList.add('show');
+        setStageProgress(4, Math.round((quizProgress() / quizItems.length) * 100));
+        updateScorePanel();
+      });
+    });
+  });
+  setStageProgress(4, Math.round((quizProgress() / quizItems.length) * 100));
+  updateScorePanel();
+
+  document.getElementById('btn-stage4-next').addEventListener('click', () => {
+    state.finished = true;
+    saveState();
+    document.getElementById('finish-card').style.display = 'block';
+    document.getElementById('finish-card').scrollIntoView({behavior: 'smooth', block: 'start'});
+  });
+  if (state.finished) {
+    document.getElementById('finish-card').style.display = 'block';
+  }
+
+  // ---- Navigation (no locking — every section is open; buttons just scroll) ----
+  function scrollToStage(n) {
+    const el = document.getElementById('stage-' + n);
+    if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+  }
+
+  function setStageProgress(n, pct) {
+    const fill = document.getElementById('fill-' + n);
+    if (fill) fill.style.width = pct + '%';
+  }
+} catch (err) {
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#A24C3F;color:#fff;padding:0.8rem 1rem;font-family:sans-serif;font-size:0.9rem;z-index:9999;';
+  banner.textContent = 'This page hit a script error and some interactions may not work: ' + err.message + ' — please screenshot this and send it to your teacher.';
+  document.body.prepend(banner);
+  console.error('Session 5 script error:', err);
+}
+</script>
+
+</body>
+</html>
