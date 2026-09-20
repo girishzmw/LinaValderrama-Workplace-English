@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modals of Deduction &amp; Speculation — Pre-Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1E2A26;
+    --ink-soft:#4B564F;
+    --paper:#F1F2ED;
+    --panel:#E4E7DE;
+    --panel-line:#C9CDBF;
+    --teal:#3B6E63;
+    --teal-deep:#274A42;
+    --amber:#C08A3E;
+    --rust:#A24936;
+    --white:#FBFBF8;
+    --radius:10px;
+    --maxw:700px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+  h1{font-size:1.7rem;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em;}
+  h2{font-size:1.3rem;font-weight:600;margin:0 0 10px;letter-spacing:-0.01em;}
+  h3{font-size:1.05rem;font-weight:500;margin:0 0 8px;}
+  p{margin:0 0 14px;}
+  .layout{display:flex;min-height:100vh;}
+
+  /* --- Left rail --- */
+  .rail{
+    width:220px;flex:0 0 220px;background:var(--teal-deep);color:var(--white);
+    padding:32px 22px;position:sticky;top:0;height:100vh;overflow-y:auto;
+  }
+  .rail-title{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.65;margin-bottom:22px;}
+  .stage-item{
+    display:flex;gap:12px;align-items:flex-start;padding:10px 0;
+    position:relative;cursor:pointer;opacity:0.85;transition:opacity .25s;
+  }
+  .stage-item:hover{opacity:1;}
+  .stage-item.current{opacity:1;}
+  .stage-item.current .stage-label{font-weight:600;}
+  .stage-num{
+    width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.4);
+    display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex:0 0 26px;
+    background:transparent;
+  }
+  .stage-item.current .stage-num{border-color:var(--amber);color:var(--amber);background:var(--amber);color:var(--teal-deep);font-weight:700;}
+  .stage-label{font-size:0.88rem;padding-top:4px;}
+  .stage-connector{
+    position:absolute;left:12.5px;top:36px;width:1px;height:calc(100% - 20px);
+    background:rgba(255,255,255,0.25);
+  }
+  .stage-item:last-child .stage-connector{display:none;}
+
+  /* --- Main --- */
+  main{flex:1;padding:44px 32px 100px;display:flex;justify-content:center;}
+  .content{width:100%;max-width:var(--maxw);}
+  .eyebrow{
+    font-size:0.78rem;color:var(--teal);font-weight:600;margin-bottom:4px;
+  }
+  .case-brief{
+    background:var(--white);border:1px solid var(--panel-line);border-radius:var(--radius);
+    padding:20px 22px;margin:18px 0 32px;
+  }
+  .case-brief h3{margin-bottom:6px;color:var(--teal-deep);}
+  .case-brief .meta{font-size:0.85rem;color:var(--ink-soft);margin-bottom:10px;}
+  .case-brief ul{margin:0 0 0 18px;padding:0;}
+  .case-brief li{margin-bottom:4px;}
+
+  .stage-block{display:block;padding-bottom:36px;margin-bottom:36px;border-bottom:1px solid var(--panel-line);}
+  .stage-block:last-child{border-bottom:none;}
+  .stage-block.current{animation:fadein .3s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .save-note{font-size:0.78rem;color:var(--ink-soft);text-align:right;margin-top:-8px;margin-bottom:20px;}
+  footer.page-footer{max-width:var(--maxw);margin:0 auto;padding:20px 0 0;font-size:0.8rem;color:var(--ink-soft);text-align:center;}
+
+  /* --- Stage 1: sentences --- */
+  .sentence-card{
+    background:var(--white);border:1px solid var(--panel-line);border-radius:var(--radius);
+    padding:16px 18px;margin-bottom:12px;font-size:1.02rem;
+  }
+  .sentence-card .tag{
+    display:inline-block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;
+    color:var(--ink-soft);margin-bottom:6px;
+  }
+  .clickable{
+    cursor:pointer;border-bottom:2px dotted var(--teal);padding:0 1px;transition:background .15s;
+  }
+  .clickable.marked{background:rgba(192,138,62,0.22);border-bottom-color:var(--amber);font-weight:600;}
+  .hint-row{font-size:0.85rem;color:var(--ink-soft);margin-top:18px;font-style:italic;}
+
+  /* --- Concept check --- */
+  .cq{
+    background:var(--white);border:1px solid var(--panel-line);border-radius:var(--radius);
+    padding:18px 20px;margin-bottom:16px;
+  }
+  .cq p.q{font-weight:600;margin-bottom:10px;}
+  .inline-pair{margin-bottom:12px;}
+  .inline-sentence{
+    background:var(--panel);border-left:3px solid var(--teal);padding:9px 12px;
+    margin-bottom:6px;border-radius:0 6px 6px 0;font-size:0.96rem;
+  }
+  .opt{
+    display:block;width:100%;text-align:left;padding:9px 12px;margin-bottom:7px;
+    background:var(--panel);border:1px solid var(--panel-line);border-radius:8px;
+    cursor:pointer;font-family:inherit;font-size:0.95rem;color:var(--ink);
+  }
+  .opt:hover{border-color:var(--teal);}
+  .opt.correct{background:rgba(59,110,99,0.18);border-color:var(--teal);font-weight:600;}
+  .opt.incorrect{background:rgba(162,73,54,0.15);border-color:var(--rust);}
+  .feedback{font-size:0.9rem;margin-top:8px;padding:8px 10px;border-radius:6px;display:none;}
+  .feedback.show{display:block;}
+  .feedback.right{background:rgba(59,110,99,0.12);color:var(--teal-deep);}
+  .feedback.wrong{background:rgba(162,73,54,0.1);color:var(--rust);}
+
+  /* --- Rule stage --- */
+  .scale-wrap{margin:22px 0 30px;}
+  .scale-bar{
+    height:14px;border-radius:7px;
+    background:linear-gradient(to right, var(--rust), var(--panel-line), var(--teal));
+    margin-bottom:6px;
+  }
+  .scale-labels{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--ink-soft);}
+  table.rule-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:0.94rem;}
+  table.rule-table th{
+    text-align:left;font-family:'Fraunces',serif;font-weight:500;font-size:0.95rem;
+    border-bottom:2px solid var(--panel-line);padding:8px 10px;
+  }
+  table.rule-table td{border-bottom:1px solid var(--panel-line);padding:9px 10px;vertical-align:top;}
+  table.rule-table tr:last-child td{border-bottom:none;}
+  .certainty-cell{font-weight:600;white-space:nowrap;}
+
+  /* --- Quiz --- */
+  .quiz-item{
+    background:var(--white);border:1px solid var(--panel-line);border-radius:var(--radius);
+    padding:18px 20px;margin-bottom:14px;
+  }
+  .quiz-item .context{font-size:0.88rem;color:var(--ink-soft);margin-bottom:8px;}
+  .quiz-item input[type=text]{
+    width:100%;padding:8px 10px;border:1px solid var(--panel-line);border-radius:6px;
+    font-family:inherit;font-size:0.95rem;margin-top:4px;
+  }
+  .quiz-item input[type=text].correct-input{border-color:var(--teal);background:rgba(59,110,99,0.08);}
+  .quiz-item input[type=text].incorrect-input{border-color:var(--rust);}
+  .check-btn{
+    background:var(--teal);color:white;border:none;padding:8px 16px;border-radius:6px;
+    font-family:inherit;font-weight:600;cursor:pointer;font-size:0.88rem;margin-top:10px;
+  }
+  .check-btn:hover{background:var(--teal-deep);}
+  .score-box{
+    background:var(--panel);border-radius:var(--radius);padding:14px 18px;margin-top:18px;
+    font-weight:600;text-align:center;
+  }
+
+  /* --- Application stage --- */
+  .idiom-note{
+    background:rgba(192,138,62,0.13);border-left:3px solid var(--amber);
+    padding:10px 14px;margin:16px 0;font-size:0.9rem;border-radius:0 6px 6px 0;
+  }
+  textarea{
+    width:100%;min-height:180px;padding:14px;border:1px solid var(--panel-line);
+    border-radius:var(--radius);font-family:inherit;font-size:0.98rem;resize:vertical;
+    background:var(--white);
+  }
+  .wordcount{font-size:0.85rem;color:var(--ink-soft);margin-top:6px;text-align:right;}
+  .wordcount.ok{color:var(--teal);font-weight:600;}
+
+  .nav-row{display:flex;justify-content:flex-end;margin-top:28px;}
+  .next-btn{
+    background:var(--ink);color:white;border:none;padding:11px 22px;border-radius:8px;
+    font-family:inherit;font-weight:600;cursor:pointer;font-size:0.95rem;
+  }
+  .next-btn:hover{background:var(--teal-deep);}
+
+  /* Mobile */
+  @media (max-width:760px){
+    .layout{flex-direction:column;}
+    .rail{width:100%;flex:none;height:auto;position:static;padding:18px 20px;display:flex;overflow-x:auto;gap:18px;}
+    .rail-title{display:none;}
+    .stage-connector{display:none;}
+    .stage-item{flex-direction:column;align-items:center;text-align:center;min-width:70px;}
+    .stage-label{font-size:0.72rem;padding-top:2px;}
+    main{padding:28px 18px 80px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <nav class="rail" id="rail">
+    <div class="rail-title">Pre-Learning · Case File</div>
+    <div class="stage-item current" data-stage="1">
+      <div class="stage-connector"></div>
+      <div class="stage-num">1</div>
+      <div class="stage-label">Notice the pattern</div>
+    </div>
+    <div class="stage-item" data-stage="2">
+      <div class="stage-connector"></div>
+      <div class="stage-num">2</div>
+      <div class="stage-label">Concept check</div>
+    </div>
+    <div class="stage-item" data-stage="3">
+      <div class="stage-connector"></div>
+      <div class="stage-num">3</div>
+      <div class="stage-label">The rule</div>
+    </div>
+    <div class="stage-item" data-stage="4">
+      <div class="stage-connector"></div>
+      <div class="stage-num">4</div>
+      <div class="stage-label">Consolidation quiz</div>
+    </div>
+    <div class="stage-item" data-stage="5">
+      <div class="stage-connector"></div>
+      <div class="stage-num">5</div>
+      <div class="stage-label">Application</div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="content">
+
+      <div class="eyebrow">Pre-learning · ~30–40 min</div>
+      <h1>Modals of Deduction &amp; Speculation</h1>
+      <p style="color:var(--ink-soft)">How sure are you — and how do you show it?</p>
+
+      <div class="case-brief">
+        <h3>The case</h3>
+        <div class="meta">Regional People Analytics team · confidential internal note</div>
+        <p style="margin-bottom:8px;">Attrition on the Client Solutions team has jumped from 6% to 19% in one quarter. Nobody has a confirmed cause. What you have is partial and circumstantial:</p>
+        <ul>
+          <li>A new team lead started 10 weeks ago.</li>
+          <li>Exit interviews mention "unclear expectations" twice, but three other exits gave no reason at all.</li>
+          <li>A restructuring rumor has been circulating since August — HR has not confirmed or denied it.</li>
+          <li>Engagement scores for this team were already trending down before any of this.</li>
+        </ul>
+      </div>
+
+      <div class="save-note" id="save-note">Progress saves automatically on this device.</div>
+
+      <!-- STAGE 1 -->
+      <section class="stage-block" id="stage-1">
+        <h2>1. Notice the pattern</h2>
+        <p>Click the modal expression in each sentence. Don't worry about naming the rule yet — just notice how sure or unsure each speaker sounds.</p>
+
+        <div class="sentence-card"><span class="tag">Everyday</span><br>
+          She <span class="clickable" data-group="1">must be</span> in a meeting — her calendar's blocked all afternoon.
+        </div>
+        <div class="sentence-card"><span class="tag">HR — present</span><br>
+          The new team lead <span class="clickable" data-group="1">might be</span> unaware of the complaint; nobody's escalated it yet.
+        </div>
+        <div class="sentence-card"><span class="tag">HR — present</span><br>
+          That <span class="clickable" data-group="1">can't be</span> the whole reason for the drop — engagement was already falling before the reorg rumor started.
+        </div>
+        <div class="sentence-card"><span class="tag">HR — past</span><br>
+          The attrition spike <span class="clickable" data-group="1">could have been</span> triggered by the leadership change, but we can't confirm it yet.
+        </div>
+        <div class="sentence-card"><span class="tag">HR — past</span><br>
+          Three people <span class="clickable" data-group="1">must have missed</span> the town hall — they're asking questions it already answered.
+        </div>
+        <div class="sentence-card"><span class="tag">Everyday</span><br>
+          She <span class="clickable" data-group="1">can't have seen</span> the survey results; she'd have mentioned them in the meeting.
+        </div>
+
+        <p class="hint-row">Once you've clicked all six, ask yourself: which ones sound almost certain? Which ones sound like a guess?</p>
+
+        <div class="nav-row"><button class="next-btn" id="btn-1">Continue to concept check</button></div>
+      </section>
+
+      <!-- STAGE 2 -->
+      <section class="stage-block" id="stage-2">
+        <h2>2. Concept check</h2>
+        <p>Look back at the six sentences before answering.</p>
+
+        <div class="cq" data-q="1">
+          <p class="q">In "must be," "might be," and "can't be," what form comes right after the modal?</p>
+          <button class="opt" data-correct="true">The base form (be, know, work…)</button>
+          <button class="opt">The -ing form (being, knowing…)</button>
+          <button class="opt">The past simple (was, knew…)</button>
+          <div class="feedback"></div>
+        </div>
+
+        <div class="cq" data-q="2">
+          <p class="q">Compare these two sentences. What's different between them?</p>
+          <div class="inline-pair">
+            <div class="inline-sentence">She <strong>must be</strong> in a meeting — her calendar's blocked all afternoon.</div>
+            <div class="inline-sentence">Three people <strong>must have missed</strong> the town hall — they're asking questions it already answered.</div>
+          </div>
+          <button class="opt">Nothing — they mean the same thing</button>
+          <button class="opt" data-correct="true">Sentence 1 is about right now; sentence 5 is about something already finished</button>
+          <button class="opt">Sentence 5 is less certain than sentence 1</button>
+          <div class="feedback"></div>
+        </div>
+
+        <div class="cq" data-q="3">
+          <p class="q">Which pattern is used for deduction about the past — "must have missed," "could have been," "can't have seen"?</p>
+          <button class="opt">modal + verb-ing</button>
+          <button class="opt" data-correct="true">modal + have + past participle</button>
+          <button class="opt">modal + did + verb</button>
+          <div class="feedback"></div>
+        </div>
+
+        <div class="cq" data-q="4">
+          <p class="q">Which two words, in these sentences, signal the speaker is almost certain — not just guessing?</p>
+          <button class="opt" data-correct="true">must / can't</button>
+          <button class="opt">might / could</button>
+          <button class="opt">would / should</button>
+          <div class="feedback"></div>
+        </div>
+
+        <div class="nav-row"><button class="next-btn" id="btn-2">Continue to the rule</button></div>
+      </section>
+
+      <!-- STAGE 3 -->
+      <section class="stage-block" id="stage-3">
+        <h2>3. The rule</h2>
+        <p>You've already found this — here it is written out.</p>
+
+        <div class="scale-wrap">
+          <div class="scale-bar"></div>
+          <div class="scale-labels">
+            <span>Almost certain — no</span>
+            <span>Guessing</span>
+            <span>Almost certain — yes</span>
+          </div>
+        </div>
+
+        <table class="rule-table">
+          <tr><th>Certainty</th><th>About now</th><th>About the past</th></tr>
+          <tr><td class="certainty-cell">Almost sure — yes</td><td>must + base verb</td><td>must have + past participle</td></tr>
+          <tr><td class="certainty-cell">Fairly sure</td><td>probably is/does</td><td>probably + past simple</td></tr>
+          <tr><td class="certainty-cell">Guessing</td><td>might / could + base verb</td><td>might / could have + past participle</td></tr>
+          <tr><td class="certainty-cell">Almost sure — no</td><td>can't + base verb</td><td>can't have + past participle</td></tr>
+        </table>
+
+        <p style="margin-top:16px;">One structure, two time zones. The modal tells your listener how confident you are — the verb form after it tells them when.</p>
+
+        <div class="nav-row"><button class="next-btn" id="btn-3">Continue to the quiz</button></div>
+      </section>
+
+      <!-- STAGE 4 -->
+      <section class="stage-block" id="stage-4">
+        <h2>4. Consolidation quiz</h2>
+        <p>Complete each sentence using the certainty level given. There's often more than one acceptable answer — the checker looks for the right modal + verb pattern, not one exact wording.</p>
+
+        <div class="quiz-item" data-answers="must be reviewing,must be looking at">
+          <div class="context">Context: The CFO's office light has been on since 6am and two analysts were called in. (Certainty: almost sure — now)</div>
+          <p>He <input type="text" placeholder="e.g. must be reviewing the numbers"> the quarterly numbers.</p>
+        </div>
+
+        <div class="quiz-item" data-answers="might have missed,could have missed">
+          <div class="context">Context: Three exits gave no reason at all. (Certainty: guessing — past)</div>
+          <p>They <input type="text" placeholder="e.g. might have missed"> a chance to raise the issue earlier.</p>
+        </div>
+
+        <div class="quiz-item" data-answers="can't have known,can't have been aware">
+          <div class="context">Context: The new lead only started 10 weeks ago, before the engagement dip began. (Certainty: almost sure not — past)</div>
+          <p>She <input type="text" placeholder="e.g. can't have known"> about the downward trend when she took the role.</p>
+        </div>
+
+        <div class="quiz-item" data-answers="must have felt,must have found">
+          <div class="context">Context: Two exit interviews mention "unclear expectations." (Certainty: almost sure — past)</div>
+          <p>Those two employees <input type="text" placeholder="e.g. must have felt"> the role poorly defined.</p>
+        </div>
+
+        <div class="quiz-item" data-answers="could be driving,might be driving,could be behind,might be behind">
+          <div class="context">Context: A restructuring rumor has circulated since August, unconfirmed. (Certainty: guessing — now)</div>
+          <p>The rumor <input type="text" placeholder="e.g. could be driving"> some of the uncertainty on the team.</p>
+        </div>
+
+        <div class="quiz-item" data-answers="can't be the only reason,can't be the whole story">
+          <div class="context">Context: Engagement was already falling before any of this started. (Certainty: almost sure not — now)</div>
+          <p>The reorg rumor <input type="text" placeholder="e.g. can't be the only reason"> for the drop.</p>
+        </div>
+
+        <button class="check-btn" id="check-quiz">Check my answers</button>
+        <div class="score-box" id="score-box" style="display:none;"></div>
+
+        <div class="nav-row"><button class="next-btn" id="btn-4">Continue to the writing task</button></div>
+      </section>
+
+      <!-- STAGE 5 -->
+      <section class="stage-block" id="stage-5">
+        <h2>5. Application — your read on the case</h2>
+        <p>Write 5–8 sentences giving your own analysis of the case below. You don't have enough information to be certain about anything — that's the point.</p>
+
+        <div class="case-brief">
+          <h3>The case, again</h3>
+          <div class="meta">Regional People Analytics team · confidential internal note</div>
+          <p style="margin-bottom:8px;">Attrition on the Client Solutions team has jumped from 6% to 19% in one quarter. Nobody has a confirmed cause. What you have is partial and circumstantial:</p>
+          <ul>
+            <li>A new team lead started 10 weeks ago.</li>
+            <li>Exit interviews mention "unclear expectations" twice, but three other exits gave no reason at all.</li>
+            <li>A restructuring rumor has been circulating since August — HR has not confirmed or denied it.</li>
+            <li>Engagement scores for this team were already trending down before any of this.</li>
+          </ul>
+        </div>
+
+        <div class="idiom-note">
+          <strong>Worth knowing:</strong> in English, when someone works out what's really going on from small, indirect clues, we say they're <em>reading between the lines</em> — for example, "Reading between the lines, I don't think the reorg rumor is the real problem." You'll be doing exactly that in this task.
+        </div>
+
+        <p><strong>Use at least three different certainty levels</strong> from the scale above (for example: one "must have," one "might/could," one "can't be" or "can't have"). Mix present and past where it fits your reasoning.</p>
+
+        <textarea id="writing-area" placeholder="Start with what you think is most likely, then work through the less certain possibilities..."></textarea>
+        <div class="wordcount" id="wordcount">0 words</div>
+
+        <p style="margin-top:22px;color:var(--ink-soft);font-size:0.9rem;">Bring this with you to class — we'll pick it up in the first ten minutes.</p>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<footer class="page-footer">© Zenning My Way — English Consolidation Program</footer>
+
+<script>
+  const STORAGE_KEY = 'zmw_modals_deduction_v1';
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {clicked:[], cq:{}, quiz:{}, writing:''};
+    }catch(e){ return {clicked:[], cq:{}, quiz:{}, writing:''}; }
+  }
+  let state = loadState();
+
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+
+  // Free navigation — every section is open; the rail and buttons just scroll.
+  function scrollToStage(n){
+    const el = document.getElementById('stage-'+n);
+    if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  document.querySelectorAll('.stage-item').forEach(item=>{
+    item.addEventListener('click', ()=> scrollToStage(parseInt(item.dataset.stage)));
+  });
+  document.getElementById('btn-1').addEventListener('click', ()=> scrollToStage(2));
+  document.getElementById('btn-2').addEventListener('click', ()=> scrollToStage(3));
+  document.getElementById('btn-3').addEventListener('click', ()=> scrollToStage(4));
+  document.getElementById('btn-4').addEventListener('click', ()=> scrollToStage(5));
+
+  // Highlight the rail item nearest the current scroll position.
+  const stageBlocks = document.querySelectorAll('.stage-block');
+  const railItems = document.querySelectorAll('.stage-item');
+  function updateCurrentOnScroll(){
+    let closest = 1;
+    stageBlocks.forEach(block=>{
+      const rect = block.getBoundingClientRect();
+      if(rect.top <= 140) closest = parseInt(block.id.split('-')[1]);
+    });
+    railItems.forEach(el=> el.classList.toggle('current', parseInt(el.dataset.stage) === closest));
+  }
+  document.addEventListener('scroll', updateCurrentOnScroll, {passive:true});
+  updateCurrentOnScroll();
+
+  // Stage 1: click-to-highlight, persisted
+  const clickables = document.querySelectorAll('.clickable');
+  clickables.forEach((el, idx)=>{
+    if(state.clicked.includes(idx)) el.classList.add('marked');
+    el.addEventListener('click', ()=>{
+      if(!el.classList.contains('marked')){
+        el.classList.add('marked');
+        state.clicked.push(idx);
+        saveState();
+      }
+    });
+  });
+
+  // Stage 2: concept check, persisted, re-clickable to review
+  document.querySelectorAll('.cq').forEach(cq=>{
+    const qid = cq.dataset.q;
+    function renderSaved(){
+      if(state.cq[qid] !== undefined){
+        const opts = cq.querySelectorAll('.opt');
+        opts.forEach((b,i)=>{
+          if(i === state.cq[qid]){
+            b.classList.add(b.dataset.correct === 'true' ? 'correct' : 'incorrect');
+          }
+          if(b.dataset.correct === 'true') b.classList.add('correct');
+        });
+        const fb = cq.querySelector('.feedback');
+        const wasCorrect = opts[state.cq[qid]].dataset.correct === 'true';
+        fb.textContent = wasCorrect ? "Right — that's the pattern." : "Not quite — the correct option is highlighted above.";
+        fb.className = 'feedback show ' + (wasCorrect ? 'right' : 'wrong');
+      }
+    }
+    renderSaved();
+    cq.querySelectorAll('.opt').forEach((btn, i)=>{
+      btn.addEventListener('click', ()=>{
+        const fb = cq.querySelector('.feedback');
+        const correct = btn.dataset.correct === 'true';
+        cq.querySelectorAll('.opt').forEach(b=>{b.classList.remove('correct','incorrect');});
+        if(correct){
+          btn.classList.add('correct');
+          fb.textContent = "Right — that's the pattern.";
+          fb.className = 'feedback show right';
+        } else {
+          btn.classList.add('incorrect');
+          cq.querySelector('[data-correct="true"]').classList.add('correct');
+          fb.textContent = "Not quite — the correct option is highlighted above.";
+          fb.className = 'feedback show wrong';
+        }
+        state.cq[qid] = i;
+        saveState();
+      });
+    });
+  });
+
+  // Stage 4: quiz check, persisted
+  const quizItems = document.querySelectorAll('.quiz-item');
+  quizItems.forEach((item, idx)=>{
+    const input = item.querySelector('input[type=text]');
+    if(state.quiz[idx]) input.value = state.quiz[idx];
+    input.addEventListener('input', ()=>{
+      state.quiz[idx] = input.value;
+      saveState();
+    });
+  });
+  document.getElementById('check-quiz').addEventListener('click', ()=>{
+    let correctCount = 0;
+    quizItems.forEach(item=>{
+      const input = item.querySelector('input[type=text]');
+      const accepted = item.dataset.answers.split(',').map(a=>a.trim().toLowerCase());
+      const val = input.value.trim().toLowerCase();
+      input.classList.remove('correct-input','incorrect-input');
+      if(accepted.includes(val)){
+        input.classList.add('correct-input');
+        correctCount++;
+      } else {
+        input.classList.add('incorrect-input');
+      }
+    });
+    const box = document.getElementById('score-box');
+    box.style.display = 'block';
+    box.textContent = correctCount + ' / ' + quizItems.length + ' matched exactly. A different wording that fits the same certainty level is still fine — check with your teacher in class if unsure.';
+  });
+
+  // Stage 5: word count, persisted
+  const textarea = document.getElementById('writing-area');
+  const wc = document.getElementById('wordcount');
+  if(state.writing) textarea.value = state.writing;
+  function updateWordcount(){
+    const words = textarea.value.trim().split(/\s+/).filter(w=>w.length>0);
+    wc.textContent = words.length + ' words';
+    wc.classList.toggle('ok', words.length >= 5);
+  }
+  updateWordcount();
+  textarea.addEventListener('input', ()=>{
+    state.writing = textarea.value;
+    saveState();
+    updateWordcount();
+  });
+</script>
+
+</body>
+</html>
