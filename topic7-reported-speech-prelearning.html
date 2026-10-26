@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topic 7 · Reported Speech</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f4ee; --card:#ffffff; --ink:#1f2328; --muted:#5d636b; --line:#e3ddd2;
+  --accent:#2f5d62; --accent-soft:#e3eeee; --gold:#b7791f; --gold-soft:#fbf1dc;
+  --ok:#2e7d4f; --ok-soft:#e3f3e8; --bad:#b3412e; --bad-soft:#f8e5e1; --miss:#c98a14;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#16181b; --card:#1f2226; --ink:#e8e6e1; --muted:#a4a9b0; --line:#33373d;
+    --accent:#7fb7bd; --accent-soft:#22393b; --gold:#e0a84a; --gold-soft:#3a2f1c;
+    --ok:#6cc690; --ok-soft:#1d3527; --bad:#ec8a78; --bad-soft:#3b2421; --miss:#e8b04a;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:860px;margin:0 auto;padding:24px 16px 80px}
+header .eyebrow{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;line-height:1.25}
+h1{font-size:2rem;margin:.2em 0 .2em}
+h2{font-size:1.5rem;margin:0 0 .4em}
+h3{font-size:1.15rem;margin:1.4em 0 .5em}
+.sub{color:var(--muted);margin:0 0 1.2em}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.85rem;color:var(--muted)}
+/* stepper */
+.stepper{display:flex;gap:6px;margin:8px 0 24px;flex-wrap:wrap}
+.step{flex:1 1 120px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+.step small{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.step span{font-weight:600;font-size:.92rem}
+.step.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.step.done span::after{content:" ✓";color:var(--ok)}
+.step:disabled{opacity:.45;cursor:not-allowed}
+.stage{display:none}
+.stage.show{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0;box-shadow:var(--shadow)}
+.intro{background:var(--accent-soft);border-left:4px solid var(--accent);padding:14px 16px;border-radius:8px;margin:0 0 16px}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:6px;margin-right:6px}
+.tag.work{background:var(--accent-soft);color:var(--accent)}
+.tag.life{background:var(--gold-soft);color:var(--gold)}
+.num{font-weight:600;color:var(--muted);margin-right:4px}
+.direct{font-family:"Source Serif 4",Georgia,serif;font-size:1.08rem;margin:6px 0 4px}
+.direct .who{font-family:Inter,sans-serif;font-size:.85rem;color:var(--muted)}
+.reported{margin-top:6px;line-height:2.1}
+.reported .lbl{font-size:.8rem;color:var(--muted);margin-right:6px}
+.tok{display:inline-block;padding:0 4px;margin:0 1px;border-radius:5px;cursor:pointer;border:1px solid transparent;user-select:none}
+.tok:hover{background:var(--accent-soft)}
+.tok.sel{background:var(--accent);color:#fff}
+.tok.hit{background:var(--ok);color:#fff}
+.tok.missed{border:1.5px dashed var(--miss);background:transparent;color:var(--ink)}
+.tok.wrong{background:transparent;text-decoration:line-through;color:var(--muted)}
+.locked .tok{cursor:default}
+.legend{font-size:.85rem;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;margin-top:8px}
+.legend b{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:4px}
+button.btn{font:inherit;font-weight:600;border:none;border-radius:10px;padding:10px 18px;background:var(--accent);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+button.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.note{font-size:.9rem;color:var(--muted)}
+/* mcq */
+.q{margin:0 0 6px;font-weight:500}
+.q .ex{display:block;font-family:"Source Serif 4",Georgia,serif;font-weight:400;background:var(--bg);border-radius:8px;padding:8px 12px;margin:8px 0;font-size:1rem}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.opt{text-align:left;font:inherit;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:10px 14px;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft)}
+.opt:disabled{cursor:default}
+.fb{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.95rem;display:none}
+.fb.show{display:block}
+.fb.good{background:var(--ok-soft)}
+.fb.bad{background:var(--bad-soft)}
+.progress{font-size:.9rem;color:var(--muted)}
+/* rule */
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:.95rem}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.tablewrap{overflow-x:auto}
+.warn{background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin:14px 0}
+.warn ul{margin:6px 0 0;padding-left:18px}
+.x{color:var(--bad);font-weight:600}
+.v{color:var(--ok);font-weight:600}
+.score{font-family:"Source Serif 4",Georgia,serif;font-size:1.4rem;font-weight:600}
+/* writing */
+textarea{width:100%;min-height:240px;font:inherit;font-size:1rem;line-height:1.6;padding:14px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);resize:vertical}
+textarea:focus{outline:none;border-color:var(--accent)}
+.checklist label{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.checklist input{margin-top:5px;accent-color:var(--accent)}
+.counts{display:flex;gap:16px;font-size:.9rem;color:var(--muted);margin-top:6px}
+.toast{color:var(--ok);font-size:.9rem;font-weight:600}
+@media (max-width:560px){h1{font-size:1.6rem}.card{padding:16px}.step{flex:1 1 45%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Topic 7 · Pre-learning</div>
+  <h1>Reported speech</h1>
+  <p class="sub">Relaying what people said: feedback, findings and conversations.</p>
+  <div class="meta">
+    <span class="pill">⏱ About 40–45 minutes</span>
+    <span class="pill">Self-paced</span>
+    <span class="pill">Ends with a short writing task</span>
+  </div>
+</header>
+
+<nav class="stepper" id="stepper"></nav>
+
+<!-- STAGE 1 -->
+<section class="stage" id="s1">
+  <h2>1 · Notice the pattern</h2>
+  <div class="intro">Each card shows what someone <strong>actually said</strong>, and then how another person <strong>reported it later</strong>. No rules yet. Just look closely and find what changes.</div>
+
+  <h3>Part A · Statements, questions and requests</h3>
+  <p class="note">In each reported sentence, <strong>click every word that is different from the original</strong>: verbs, pronouns, time and place words, question words. Then press <em>Check</em>.</p>
+  <div id="partA"></div>
+  <div class="row"><button class="btn" id="checkA">Check Part A</button></div>
+
+  <h3>Part B · Beyond “said” and “told”</h3>
+  <p class="note">Here the speaker uses a different reporting verb. <strong>Click the reporting verb and the words that come straight after it</strong> (the shape the verb needs).</p>
+  <div id="partB"></div>
+  <div class="row"><button class="btn" id="checkB">Check Part B</button></div>
+
+  <div class="legend">
+    <span><b style="background:var(--ok)"></b>You found it</span>
+    <span><b style="border:1.5px dashed var(--miss)"></b>You missed it</span>
+    <span><b style="background:var(--line)"></b>Didn’t actually change</span>
+  </div>
+  <div class="row"><button class="btn" id="to2">Continue to concept check →</button></div>
+</section>
+
+<!-- STAGE 2 -->
+<section class="stage" id="s2">
+  <h2>2 · Concept check</h2>
+  <div class="intro">These questions point you to the patterns in the cards (Stage 1). If you choose a wrong answer, read the hint and try again. Look back at Stage 1 whenever you need to.</div>
+  <div id="concept"></div>
+  <div class="row"><button class="btn" id="to3">Go to the rule →</button><span class="progress" id="cprog"></span></div>
+</section>
+
+<!-- STAGE 3 -->
+<section class="stage" id="s3">
+  <h2>3 · The rule (what you just found)</h2>
+  <div class="intro">You have already worked this out. This is a summary to confirm it and to keep for reference.</div>
+
+  <div class="card">
+    <h3 style="margin-top:0">1. Move the verb one step back (“backshift”)</h3>
+    <p>When the report happens <em>later</em>, the verb moves one step into the past.</p>
+    <div class="tablewrap"><table>
+      <tr><th>They said</th><th>You report</th></tr>
+      <tr><td>am / is / are</td><td>was / were</td></tr>
+      <tr><td>present continuous (<em>are reviewing</em>)</td><td>past continuous (<em>were reviewing</em>)</td></tr>
+      <tr><td>present perfect (<em>have worked</em>)</td><td>past perfect (<em>had worked</em>)</td></tr>
+      <tr><td>past simple (<em>lost</em>)</td><td>past perfect (<em>had lost</em>). In conversation, the past simple is often kept when the order of events is clear.</td></tr>
+      <tr><td>will / can / may / must</td><td>would / could / might / had to</td></tr>
+      <tr><td>past perfect, would, could, might, should</td><td><strong>no change</strong> (there is no further step back)</td></tr>
+    </table></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">2. Reported questions become statements</h3>
+    <ul>
+      <li>Use statement word order: <strong>subject + verb</strong>. No <em>do / did</em>, no question mark.</li>
+      <li>Yes/no questions → <strong>if / whether</strong>: <em>The survey asked employees whether they felt valued.</em></li>
+      <li>Wh- questions keep the question word: <em>She asked me where I had bought my jacket.</em></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">3. Requests and instructions</h3>
+    <p><strong>ask / tell + person + (not) to + verb</strong>: <em>My manager asked me to send her the report. Legal told us not to share the results.</em></p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">4. Say vs. tell</h3>
+    <p><strong>tell + person</strong>: <em>He told me (that)…</em> · <strong>say (that)</strong> or <strong>say to + person</strong>: <em>He said (that)… / He said to me…</em></p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">5. Time and place words follow the new moment</h3>
+    <div class="tablewrap"><table>
+      <tr><th>Original</th><th>Reported later / elsewhere</th></tr>
+      <tr><td>today · tomorrow · yesterday</td><td>that day · the next / following day · the day before</td></tr>
+      <tr><td>last quarter · next month</td><td>the previous quarter · the following month</td></tr>
+      <tr><td>here · this · now</td><td>there · that · then</td></tr>
+    </table></div>
+    <p class="note">If you report on the same day and in the same place, keep the original words.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">6. When backshift is optional</h3>
+    <p>If the information is <strong>still true now</strong>, you can keep the present tense: <em>She told me their head office <strong>is</strong> in Bogotá.</em> Backshifting is also correct. Keeping the present shows you believe it is still true.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">7. Reporting verbs: each one has its own pattern</h3>
+    <p>Professional reports rarely use only <em>say</em> and <em>tell</em>. Learn each verb <strong>together with its pattern</strong>:</p>
+    <div class="tablewrap"><table>
+      <tr><th>Pattern</th><th>Verbs</th><th>Example</th></tr>
+      <tr><td>verb + that…</td><td>admit, explain, claim, acknowledge, confirm, point out, argue</td><td>The VP acknowledged that turnover had been underestimated.</td></tr>
+      <tr><td>verb + person + to…</td><td>ask, advise, urge, encourage, remind, warn</td><td>My coach advised me to talk to my team first.</td></tr>
+      <tr><td>verb + -ing</td><td>suggest, recommend, admit, deny</td><td>Ana suggested running a pulse survey.</td></tr>
+      <tr><td>verb + to…</td><td>offer, agree, refuse, promise</td><td>My brother offered to pick the kids up.</td></tr>
+    </table></div>
+    <div class="warn"><strong>Watch out: Spanish patterns that don’t work in English</strong>
+      <ul>
+        <li><span class="x">✗</span> He explained me the policy → <span class="v">✓</span> He explained the policy <strong>to me</strong></li>
+        <li><span class="x">✗</span> She suggested me to apply → <span class="v">✓</span> She suggested <strong>applying</strong> / suggested <strong>that I apply</strong></li>
+        <li><span class="x">✗</span> He said me that… → <span class="v">✓</span> He <strong>told me</strong> that… / He <strong>said</strong> that…</li>
+        <li><span class="x">✗</span> She asked if did I agree → <span class="v">✓</span> She asked if <strong>I agreed</strong></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row"><button class="btn" id="to4">Go to the quiz →</button></div>
+</section>
+
+<!-- STAGE 4 -->
+<section class="stage" id="s4">
+  <h2>4 · Consolidation quiz</h2>
+  <div class="intro">12 questions. Your first answer counts toward the score, so think before you click. Read the explanation after each one.</div>
+  <div id="quiz"></div>
+  <div class="card" id="quizdone" style="display:none">
+    <div class="score" id="scoreline"></div>
+    <p class="note" id="scorenote"></p>
+    <button class="btn" id="to5">Go to the writing task →</button>
+  </div>
+</section>
+
+<!-- STAGE 5 -->
+<section class="stage" id="s5">
+  <h2>5 · Application: write it</h2>
+  <div class="card">
+    <h3 style="margin-top:0">Your task (5–8 sentences)</h3>
+    <p>Think of a conversation from your working life that stayed with you: an exit interview, feedback from a leader, a difficult conversation with an employee, or a comment in an engagement survey. <strong>Report it to a colleague who wasn’t there.</strong> Explain who said what, what was asked, and what was recommended.</p>
+    <p class="note">You can change names and details. What matters is the language.</p>
+    <div class="checklist">
+      <p class="note" style="margin-bottom:4px"><strong>Include at least:</strong></p>
+      <label><input type="checkbox"> 2 reported statements with backshift (<em>she said they had…</em>)</label>
+      <label><input type="checkbox"> 1 reported question (<em>he asked whether…</em> / <em>asked why…</em>)</label>
+      <label><input type="checkbox"> 1 reported request or piece of advice (<em>asked / advised me to…</em>)</label>
+      <label><input type="checkbox"> 2 reporting verbs other than <em>say</em> and <em>tell</em>, each with its correct pattern</label>
+    </div>
+  </div>
+  <textarea id="writing" spellcheck="false" autocorrect="off" autocapitalize="sentences" placeholder="Last year, during an exit interview, a senior engineer told me that…"></textarea>
+  <div class="counts"><span id="wc">0 words</span><span id="sc">0 sentences</span></div>
+  <div class="warn">
+    <strong>Spellcheck is switched off on purpose.</strong> Before you send your text, read it once only for <strong>spelling</strong> and once only for <strong>punctuation</strong> (full stops, commas, capital letters). Correct anything you find yourself.
+  </div>
+  <div class="row">
+    <button class="btn" id="copy">Copy my text</button>
+    <span class="toast" id="copied"></span>
+  </div>
+  <p class="note">Paste your text into WhatsApp and send it to your teacher before the next session. Your draft is saved in this browser if you close the page.</p>
+</section>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const pairs = [
+  // Part A
+  {p:"A",ctx:"life",who:"Your sister",d:"I’m exhausted after this week.",r:"My sister said [she] [was] exhausted after [that] week."},
+  {p:"A",ctx:"work",who:"The HR director",d:"We’re reviewing the onboarding process.",r:"The HR director said [they] [were] [reviewing] the onboarding process."},
+  {p:"A",ctx:"work",who:"An employee, in an exit interview",d:"I’ve worked here for twelve years.",r:"In the exit interview, the employee said [they] [had] [worked] [there] for twelve years."},
+  {p:"A",ctx:"work",who:"The plant manager",d:"We lost three engineers last quarter.",r:"The plant manager told me [they] [had] [lost] three engineers [the] [previous] [quarter]."},
+  {p:"A",ctx:"life",who:"Your friend",d:"I’ll call you tomorrow.",r:"My friend said [he] [would] call [me] [the] [next] [day]."},
+  {p:"A",ctx:"life",who:"Carlos",d:"I can’t come to the dinner on Friday.",r:"Carlos told us [he] [couldn’t] come to the dinner on Friday."},
+  {p:"A",ctx:"work",who:"The CFO",d:"We may need to restructure the team.",r:"The CFO said [they] [might] need to restructure the team."},
+  {p:"A",ctx:"work",who:"An engagement survey question",d:"Do you feel valued here?",r:"The survey asked employees [whether] [they] [felt] valued [there]."},
+  {p:"A",ctx:"life",who:"Your cousin",d:"Where did you buy that jacket?",r:"My cousin asked me where [I] [had] [bought] [my] jacket."},
+  {p:"A",ctx:"work",who:"Your manager",d:"Please send me the report by Monday.",r:"My manager asked [me] [to] [send] [her] the report by Monday."},
+  // Part B
+  {p:"B",ctx:"work",who:"The VP",d:"Yes, we underestimated the turnover risk.",r:"The VP [admitted] [that] they had underestimated the turnover risk."},
+  {p:"B",ctx:"life",who:"Your doctor",d:"You should take a proper break.",r:"My doctor [advised] [me] [to] [take] a proper break."},
+  {p:"B",ctx:"work",who:"Ana, in a team meeting",d:"Let’s run a pulse survey.",r:"Ana [suggested] [running] a pulse survey."},
+  {p:"B",ctx:"life",who:"Your brother",d:"Don’t worry, I’ll pick the kids up from school.",r:"My brother [offered] [to] [pick] the kids up from school."}
+];
+
+const concept = [
+  {q:"Look at cards 1 and 2.",ex:"“I’m exhausted” → she was exhausted<br>“We’re reviewing” → they were reviewing",
+   o:[["Nothing happened. The verbs stayed the same.",0,"Look again: am → was, are → were."],
+      ["The verbs moved one step back into the past.",1,"Exactly. The report happens later, so the verb moves one step back."],
+      ["The verbs became perfect tenses.",0,"Not here. Was and were are past simple and past continuous, not perfect."]]},
+  {q:"Look at cards 3 and 4.",ex:"“I’ve worked” → had worked<br>“We lost” → they had lost",
+   o:[["Both became past simple.",0,"Check the auxiliary. Both now use had."],
+      ["Both became past perfect.",1,"Yes. Present perfect and past simple both move back to past perfect. The past perfect can’t move back any further, so it never changes."],
+      ["Both became past continuous.",0,"There’s no was/were + -ing here. Look for had."]]},
+  {q:"Look at cards 5, 6 and 7. What happened to will, can and may?",ex:"will call → would call · can’t come → couldn’t come · may need → might need",
+   o:[["They stayed the same.",0,"Compare the original and the report again."],
+      ["They became would, could and might.",1,"Right. Modals have past forms too, and they move back just like verbs."],
+      ["They disappeared.",0,"They are still there, just in a different form."]]},
+  {q:"Look at cards 8 and 9. What happened to the question?",ex:"“Do you feel valued here?” → asked whether they felt valued there<br>“Where did you buy…?” → asked where I had bought…",
+   o:[["It kept question word order and the question mark.",0,"Look: there’s no do/did and no question mark in the report."],
+      ["It became normal statement order (subject + verb), with no do/did and no question mark.",1,"Exactly. A reported question is no longer a question. It’s a statement about a question."],
+      ["The verb moved to the end of the sentence.",0,"Not quite. Look at where the subject (they, I) sits relative to the verb."]]},
+  {q:"Card 8 is a yes/no question: it has no question word like where or why. What word introduces it in the report?",ex:"The survey asked employees ___ they felt valued.",
+   o:[["that",0,"That is for statements, not questions."],
+      ["whether (or if)",1,"Yes. Yes/no questions are reported with whether or if. Whether sounds a little more formal."],
+      ["what",0,"What would add a meaning that wasn’t in the original question."]]},
+  {q:"Card 10 is a request. How is it reported?",ex:"“Please send me the report.” → My manager asked me to send her the report.",
+   o:[["asked + person + to + verb",1,"Right. Please disappears, and the request becomes ask + person + to-infinitive."],
+      ["said + please + verb",0,"Please doesn’t survive in reported speech."],
+      ["asked that send",0,"Look at the words straight after asked."]]},
+  {q:"Compare these two cards. What’s the difference between say and tell?",ex:"My sister <u>said</u> she was exhausted… · The plant manager <u>told me</u> they had lost…",
+   o:[["They are always interchangeable.",0,"Try “He said me…”. Does it sound right?"],
+      ["Tell needs a person directly after it (told me). Say doesn’t (said that… / said to me).",1,"Exactly. That’s why “He said me” is wrong, but “He told me” is right."],
+      ["Say is formal and tell is informal.",0,"The difference is grammatical, not about formality."]]},
+  {q:"Why did these words change?",ex:"tomorrow → the next day · last quarter → the previous quarter · here → there · this week → that week",
+   o:[["Reported English is more formal.",0,"Think about when and where the report happens."],
+      ["The time and place of the report are different from the original moment.",1,"Yes. “Tomorrow” only makes sense from the speaker’s day. If you report on the same day and in the same place, you can keep the original words."],
+      ["It’s a fixed rule. They always change.",0,"Not always. It depends on when and where you report."]]},
+  {q:"Look at Part B. Which statement is true?",ex:"admitted that… · advised me to take · suggested running · offered to pick",
+   o:[["All reporting verbs follow the same pattern as say.",0,"Compare the words that follow each verb."],
+      ["Each reporting verb has its own pattern, so you learn the verb and its pattern together.",1,"Exactly. That, person + to, -ing, to: four different shapes from four verbs."],
+      ["All reporting verbs take to + verb.",0,"Look at suggested running and admitted that."]]},
+  {q:"“Ana suggested running a pulse survey.” Which other version is also correct?",ex:"",
+   o:[["Ana suggested us to run a pulse survey.",0,"This follows the Spanish pattern sugerir a alguien que, which doesn’t work in English: suggest never takes person + to."],
+      ["Ana suggested that we run a pulse survey.",1,"Correct. Suggest + -ing or suggest + that-clause. Never suggest + person + to."],
+      ["Ana suggested to run a pulse survey.",0,"Suggest is not followed by to + verb."]]},
+  {q:"One last pattern. Last week a colleague said: “Our head office is in Bogotá.” Today you report it like this:",ex:"She told me their head office <strong>is</strong> in Bogotá.",
+   o:[["That’s a mistake. It must be was.",0,"Was is also correct, but is is not a mistake here. Why might that be?"],
+      ["It’s fine, because the fact is still true now. Backshift is optional here.",1,"Yes. When something is still true, you can keep the present tense. It signals that you believe it is still the case."],
+      ["Place names never change tense.",0,"The tense belongs to the verb, not the place. Think about whether the fact is still true."]]}
+];
+
+const quiz = [
+  {q:"“I’m working from home today.” → She said she ___ from home that day.",o:["is working","was working","has worked"],a:1,
+   e:"Present continuous moves back to past continuous: was working."},
+  {q:"“We have already closed the vacancy.” → The recruiter told me they ___ the vacancy.",o:["already closed","had already closed","have already close"],a:1,
+   e:"Present perfect moves back to past perfect: had already closed."},
+  {q:"“Did you receive my email?” → She asked me ___.",o:["did I receive her email","if I had received her email","if had I received her email"],a:1,
+   e:"Yes/no question → if/whether, then statement order (I had received). No did, no inversion."},
+  {q:"“Why are people leaving?” → The CEO asked why people ___.",o:["were leaving","are people leaving","were people leaving"],a:0,
+   e:"Keep the question word, use statement order (people were leaving), and backshift."},
+  {q:"Choose the correct sentence.",o:["He explained me the new policy.","He explained the new policy to me.","He explained to me about the new policy."],a:1,
+   e:"Explain something to someone. Never explain me."},
+  {q:"Choose the correct sentence.",o:["She said me that the budget was approved.","She told that the budget had been approved.","She told me that the budget had been approved."],a:2,
+   e:"Tell needs a person (told me). Say doesn’t take a person directly (said that… or said to me…)."},
+  {q:"“You should take a few days off.” → My doctor ___ a few days off.",o:["advised me to take","suggested me to take","recommended me take"],a:0,
+   e:"Advise + person + to. Suggest never takes person + to."},
+  {q:"“Why don’t we pilot the program in Bogotá first?” → The director ___ the program in Bogotá first.",o:["suggested to pilot","suggested piloting","suggested us to pilot"],a:1,
+   e:"Suggest + -ing (or suggested that we pilot)."},
+  {q:"“OK, I made a mistake with the payroll file.” → He ___ a mistake with the payroll file.",o:["admitted making","admitted to make","admitted me that he made"],a:0,
+   e:"Admit + -ing, or admit that he had made. Never admit + person or admit + to + verb."},
+  {q:"“Don’t share the results before Friday.” → Legal told us ___ the results before Friday.",o:["not to share","don’t share","to don’t share"],a:0,
+   e:"A negative instruction becomes tell + person + not to + verb."},
+  {q:"In March, the director said: “We’re planning a restructure next month.” You report it in October: He said they were planning a restructure ___.",o:["next month","the following month","the last month"],a:1,
+   e:"Next month now means November, which isn’t what he meant. From a later point, use the following month."},
+  {q:"Yesterday a colleague said: “Our team has 40 people.” It’s still true. Which report is acceptable?",o:["She told me their team has 40 people.","She told me their team had 40 people.","Both are acceptable."],a:2,
+   e:"When the fact is still true, backshift is optional. Both are correct."}
+];
+
+/* ---------- STEPPER ---------- */
+const stages=[["Stage 1","Notice"],["Stage 2","Concept check"],["Stage 3","The rule"],["Stage 4","Quiz"],["Stage 5","Write"]];
+let current=1;
+const done=new Set();
+const stepper=document.getElementById('stepper');
+function renderStepper(){
+  stepper.innerHTML='';
+  stages.forEach((s,i)=>{
+    const n=i+1,b=document.createElement('button');
+    b.className='step'+(n===current?' active':'')+(done.has(n)?' done':'');
+    b.innerHTML=`<small>${s[0]}</small><span>${s[1]}</span>`;
+    b.onclick=()=>go(n);
+    stepper.appendChild(b);
+  });
+}
+function go(n){
+  current=n;
+  document.querySelectorAll('.stage').forEach((el,i)=>el.classList.toggle('show',i+1===n));
+  renderStepper(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function markDone(n){ done.add(n); renderStepper(); }
+
+/* ---------- STAGE 1 ---------- */
+function tokenize(s){
+  const out=[];let inB=false;
+  s.split(' ').forEach(w=>{
+    let t=w;
+    if(t.startsWith('[')){inB=true;t=t.slice(1);}
+    const end=t.includes(']');
+    if(end) t=t.replace(']','');
+    out.push({t,target:inB});
+    if(end) inB=false;
+  });
+  return out;
+}
+function renderPart(part,el){
+  let n=0;
+  pairs.forEach((p,idx)=>{
+    if(p.p!==part) return; n++;
+    const c=document.createElement('div');c.className='card';c.dataset.part=part;
+    const toks=tokenize(p.r).map(o=>`<span class="tok" data-t="${o.target?1:0}">${o.t}</span>`).join(' ');
+    c.innerHTML=`<span class="num">${idx+1}.</span><span class="tag ${p.ctx==='work'?'work':'life'}">${p.ctx==='work'?'Work':'Everyday'}</span>
+      <div class="direct"><span class="who">${p.who}:</span> “${p.d.replace(/[“”]/g,'')}”</div>
+      <div class="reported"><span class="lbl">Reported later:</span>${toks}</div>`;
+    el.appendChild(c);
+  });
+  el.addEventListener('click',e=>{
+    const t=e.target.closest('.tok'); if(!t||el.classList.contains('locked')) return;
+    t.classList.toggle('sel');
+  });
+}
+const partA=document.getElementById('partA'),partB=document.getElementById('partB');
+renderPart('A',partA);renderPart('B',partB);
+const checked={A:false,B:false};
+function check(part,el,btn){
+  el.classList.add('locked');
+  el.querySelectorAll('.tok').forEach(t=>{
+    const tgt=t.dataset.t==='1',sel=t.classList.contains('sel');
+    t.classList.remove('sel');
+    if(tgt&&sel) t.classList.add('hit');
+    else if(tgt) t.classList.add('missed');
+    else if(sel) t.classList.add('wrong');
+  });
+  btn.disabled=true;btn.textContent='Checked ✓';checked[part]=true;
+  if(checked.A&&checked.B) markDone(1);
+}
+document.getElementById('checkA').onclick=function(){check('A',partA,this)};
+document.getElementById('checkB').onclick=function(){check('B',partB,this)};
+document.getElementById('to2').onclick=()=>go(2);
+
+/* ---------- STAGE 2 ---------- */
+const cEl=document.getElementById('concept');let cDone=0;
+function updC(){
+  document.getElementById('cprog').textContent=`${cDone} of ${concept.length} answered correctly`;
+  if(cDone===concept.length) markDone(2);
+}
+concept.forEach((c,i)=>{
+  const card=document.createElement('div');card.className='card';
+  card.innerHTML=`<div class="q"><span class="num">Q${i+1}.</span>${c.q}${c.ex?`<span class="ex">${c.ex}</span>`:''}</div><div class="opts"></div><div class="fb"></div>`;
+  const opts=card.querySelector('.opts'),fb=card.querySelector('.fb');let solved=false;
+  c.o.forEach(o=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=o[0];
+    b.onclick=()=>{
+      if(solved) return;
+      fb.className='fb show '+(o[1]?'good':'bad');fb.textContent=o[2];
+      if(o[1]){solved=true;b.classList.add('right');opts.querySelectorAll('.opt').forEach(x=>x.disabled=true);cDone++;updC();}
+      else{b.classList.add('no');b.disabled=true;}
+    };
+    opts.appendChild(b);
+  });
+  cEl.appendChild(card);
+});
+updC();
+document.getElementById('to3').onclick=()=>go(3);
+document.getElementById('to4').onclick=()=>{markDone(3);go(4)};
+
+/* ---------- STAGE 4 ---------- */
+const qEl=document.getElementById('quiz');let qAns=0,qScore=0;
+quiz.forEach((q,i)=>{
+  const card=document.createElement('div');card.className='card';
+  card.innerHTML=`<div class="q"><span class="num">${i+1}.</span>${q.q}</div><div class="opts"></div><div class="fb"></div>`;
+  const opts=card.querySelector('.opts'),fb=card.querySelector('.fb');
+  q.o.forEach((o,j)=>{
+    const b=document.createElement('button');b.className='opt';b.textContent=o;
+    b.onclick=()=>{
+      const ok=j===q.a; if(ok) qScore++; qAns++;
+      opts.querySelectorAll('.opt').forEach((x,k)=>{x.disabled=true;if(k===q.a)x.classList.add('right');});
+      if(!ok) b.classList.add('no');
+      fb.className='fb show '+(ok?'good':'bad');fb.innerHTML=(ok?'<strong>Correct.</strong> ':'<strong>Not quite.</strong> ')+q.e;
+      if(qAns===quiz.length) finishQuiz();
+    };
+    opts.appendChild(b);
+  });
+  qEl.appendChild(card);
+});
+function finishQuiz(){
+  document.getElementById('quizdone').style.display='block';
+  document.getElementById('scoreline').textContent=`Your score: ${qScore} / ${quiz.length}`;
+  document.getElementById('scorenote').textContent= qScore>=10
+    ? 'Strong result. Note any item you missed and look at the rule for it again before you write.'
+    : 'Look back at the explanations for the items you missed, and check the matching part of the rule (Stage 3) before you write.';
+  markDone(4);
+}
+document.getElementById('to5').onclick=()=>go(5);
+
+/* ---------- STAGE 5 ---------- */
+const ta=document.getElementById('writing');
+const KEY='topic7-reported-speech-draft';
+try{const s=localStorage.getItem(KEY);if(s) ta.value=s;}catch(e){}
+function counts(){
+  const v=ta.value.trim();
+  const w=v?v.split(/\s+/).length:0;
+  const s=v?(v.match(/[^.!?]+[.!?]+/g)||[]).length:0;
+  document.getElementById('wc').textContent=`${w} word${w===1?'':'s'}`;
+  document.getElementById('sc').textContent=`${s} sentence${s===1?'':'s'}${s>=5&&s<=8?' ✓':''}`;
+}
+ta.addEventListener('input',()=>{counts();try{localStorage.setItem(KEY,ta.value);}catch(e){}});
+counts();
+document.getElementById('copy').onclick=async()=>{
+  const msg=document.getElementById('copied');
+  try{await navigator.clipboard.writeText(ta.value);msg.textContent='Copied. Now paste it into WhatsApp.';}
+  catch(e){ta.select();try{document.execCommand('copy');msg.textContent='Copied.';}catch(_){msg.textContent='Select the text and copy it manually.';}}
+  setTimeout(()=>msg.textContent='',3500);
+};
+
+renderStepper();go(1);
+</script>
+</body>
+</html>
